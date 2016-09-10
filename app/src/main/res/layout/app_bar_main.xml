@@ -1,33 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="activity"
-            type="com.meterohead.leave.mainactivity.ActivityModel"/>
+            name="toolbarViewModel"
+            type="com.meterohead.leave.mainactivity.ToolbarViewModel"/>
     </data>
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/toolbarLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         tools:context="com.meterohead.leave.mainactivity.MainActivity">
 
         <android.support.design.widget.AppBarLayout
+            app:expanded="@{toolbarViewModel.collapsingToolbarEnabled}"
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="192dp"
             android:theme="@style/AppTheme.AppBarOverlay">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <com.meterohead.leave.actionbar.MyCollapsingToolbarLayout
+                android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                android:layout_height="match_parent"
+                app:scrollFlags="@{toolbarViewModel.scrollFlags}">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:layout_collapseMode="pin" />
+            </com.meterohead.leave.actionbar.MyCollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
 
         <include layout="@layout/content_main" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:srcCompat="@drawable/ic_add_white_24dp"
+            app:layout_anchorGravity="bottom|right|start|end"/>
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>

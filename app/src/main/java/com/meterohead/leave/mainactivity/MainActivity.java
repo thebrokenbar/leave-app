@@ -2,6 +2,8 @@ package com.meterohead.leave.mainactivity;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -14,8 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.firebase.crash.FirebaseCrash;
 import com.meterohead.leave.R;
+import com.meterohead.leave.databinding.ActivityMainBinding;
 import com.meterohead.leave.databinding.ContentMainBinding;
 
 public class MainActivity extends AppCompatActivity
@@ -26,15 +28,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding activityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        ToolbarViewModel toolbarViewModel = new ToolbarViewModel();
+        toolbarViewModel.collapsingToolbarEnabled = false;
+        toolbarViewModel.scrollFlags = 0;
+        activityBinding.setToolbarViewModel(toolbarViewModel);
+
         View container = findViewById(R.id.content_main);
         ContentMainBinding binding = DataBindingUtil.bind(container);
         ActivityModel model = new ActivityModel();
         model.helloText = "Hello World of binding!";
         binding.setActivity(model);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FirebaseCrash.report(new NullPointerException("test"));
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
