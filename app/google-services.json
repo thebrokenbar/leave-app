@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "643775717352",
+    "firebase_url": "https://leave-905ed.firebaseio.com",
+    "project_id": "leave-905ed",
+    "storage_bucket": "leave-905ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643775717352:android:683de6018f86504b",
+        "android_client_info": {
+          "package_name": "com.meterohead.leave"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643775717352-jts45daj3soif14tap4bvtlmdgj8u8fa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.meterohead.leave",
+            "certificate_hash": "79708057EB8DCC3A5811025BCFD164CA86098C62"
+          }
+        },
+        {
+          "client_id": "643775717352-tmbd19od3jo51p7c7961l6ro5sqf0jkd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV70D-cyMQlF8sTRvRB1ZDXMnr5NYalWc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "643775717352-tmbd19od3jo51p7c7961l6ro5sqf0jkd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
