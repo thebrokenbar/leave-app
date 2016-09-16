@@ -2,11 +2,6 @@ package com.meterohead.leave.mainactivity;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,31 +13,30 @@ import android.view.MenuItem;
 
 import com.meterohead.leave.R;
 import com.meterohead.leave.databinding.ActivityMainBinding;
-import com.meterohead.leave.databinding.ContentMainBinding;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, IActivityController {
 
     DrawerLayout drawerLayout;
+    ToolbarViewModel toolbarViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        toolbarViewModel =
+                new ToolbarViewModel(getResources().getDimensionPixelSize(R.dimen.scrollDefaultHeight));
+        toolbarViewModel.setScrollEnabled(false);
+        toolbarViewModel.setTitle(getString(R.string.app_name));
         ActivityMainBinding activityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        ToolbarViewModel toolbarViewModel = new ToolbarViewModel();
-        toolbarViewModel.collapsingToolbarEnabled = false;
-        toolbarViewModel.scrollFlags = 0;
         activityBinding.setToolbarViewModel(toolbarViewModel);
-
-        View container = findViewById(R.id.content_main);
-        ContentMainBinding binding = DataBindingUtil.bind(container);
-        ActivityModel model = new ActivityModel();
-        model.helloText = "Hello World of binding!";
-        binding.setActivity(model);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        setupMenu(toolbar);
+    }
+
+    private void setupMenu(Toolbar toolbar) {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -81,5 +75,10 @@ public class MainActivity extends AppCompatActivity
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public ToolbarViewModel getToolbarViewModel() {
+        return toolbarViewModel;
     }
 }
