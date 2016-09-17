@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     dataBinding {
@@ -37,6 +38,8 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:24.2.0'
     compile 'com.android.support:cardview-v7:24.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
+    compile 'io.realm:android-adapters:1.3.0'
+    compile 'com.facebook.stetho:stetho:1.4.1'
 }
 
 

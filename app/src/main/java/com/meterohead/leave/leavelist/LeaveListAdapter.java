@@ -1,10 +1,7 @@
 package com.meterohead.leave.leavelist;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.databinding.ObservableArrayList;
-import android.databinding.ObservableList;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,17 +9,17 @@ import com.meterohead.leave.R;
 import com.meterohead.leave.databinding.LeaveListItemBinding;
 import com.meterohead.leave.models.Leave;
 
-import java.util.Collection;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
 /**
  * Created by Lenovo on 2016-09-13.
  */
 
-public class LeaveListAdapter extends RecyclerView.Adapter<LeaveViewHolder> {
-    private ObservableList<Leave> itemsList;
+public class LeaveListAdapter extends RealmRecyclerViewAdapter<Leave, LeaveViewHolder> {
 
-    public LeaveListAdapter(ObservableList<Leave> itemsList) {
-        this.itemsList = itemsList;
+    public LeaveListAdapter(Context activityContext, OrderedRealmCollection<Leave> data) {
+        super(activityContext, data, true);
     }
 
     @Override
@@ -35,21 +32,11 @@ public class LeaveListAdapter extends RecyclerView.Adapter<LeaveViewHolder> {
     @Override
     public void onBindViewHolder(LeaveViewHolder holder, int position) {
         LeaveListItemBinding itemBinding = holder.getItemBinding();
-        itemBinding.setLeave(itemsList.get(position));
+        itemBinding.setLeave(getData().get(position));
         itemBinding.executePendingBindings();
     }
 
-    @Override
-    public int getItemCount() {
-        return itemsList.size();
-    }
 
-    public void setItemsList(@NonNull Collection<Leave> items) {
-        if(items instanceof ObservableList) {
-            itemsList = (ObservableList<Leave>) items;
-        } else {
-            itemsList = new ObservableArrayList<>();
-            itemsList.addAll(items);
-        }
-    }
+
+
 }

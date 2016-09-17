@@ -11,8 +11,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.meterohead.leave.R;
+import com.meterohead.leave.database.realm.LeaveRealmService;
+import com.meterohead.leave.database.realm.base.interfaces.IRealmCallback;
 import com.meterohead.leave.databinding.ActivityMainBinding;
+import com.meterohead.leave.models.Leave;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, IActivityController {
@@ -23,6 +38,39 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        RealmConfiguration defaultRealmConfig = new RealmConfiguration.Builder(this)
+                .schemaVersion(0)
+                .name("leaveDb.realm")
+                .build();
+        Realm.setDefaultConfiguration(defaultRealmConfig);
+
+        //
+        LeaveRealmService service = new LeaveRealmService(Realm.getDefaultInstance());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy", Locale.getDefault());
+        try {
+            Date start = sdf.parse("16-09-2016");
+            Date end = sdf.parse("20-09-2016");
+            service.addNewLeave(new Leave(start, end, "title", 0), new IRealmCallback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(Throwable error) {
+                    FirebaseCrash.report(error);
+                    FirebaseCrash.log(error.getMessage());
+                }
+            });
+        } catch (ParseException e) {
+            FirebaseCrash.report(e);
+            FirebaseCrash.log(e.getMessage());
+        }
+
+        RealmResults<Leave> alllist = service.getAllLeaves();
+
+        //
+
         toolbarViewModel =
                 new ToolbarViewModel(getResources().getDimensionPixelSize(R.dimen.scrollDefaultHeight));
         toolbarViewModel.setScrollEnabled(false);
