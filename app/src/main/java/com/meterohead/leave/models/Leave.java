@@ -1,5 +1,7 @@
 package com.meterohead.leave.models;
 
+import org.parceler.Parcel;
+
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -9,7 +11,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Lenovo on 2016-09-13.
  */
-
+@Parcel(Parcel.Serialization.BEAN)
 public class Leave extends RealmObject{
 
     @PrimaryKey

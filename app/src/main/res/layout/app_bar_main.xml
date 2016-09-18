@@ -25,9 +25,12 @@
                 android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:titleEnabled="@{toolbarViewModel.collapsingToolbarEnabled}"
-                app:title="@{toolbarViewModel.title}"
+                app:titleEnabled="false"
                 app:scrollFlags="@{toolbarViewModel.scrollFlags}">
+                <FrameLayout
+                    android:id="@+id/action_bar_toolbar_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -36,7 +39,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:theme="@style/AppTheme.Toolbar"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"/>
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+                    </android.support.v7.widget.Toolbar>
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
@@ -45,12 +49,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <fragment
-                android:id="@+id/default_fragment"
-                android:name="com.meterohead.leave.leavelist.LeaveListFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:layout="@layout/leave_list" />
         </FrameLayout>
 
     </android.support.design.widget.CoordinatorLayout>

@@ -1,58 +1,28 @@
 package com.meterohead.leave.leavelist;
 
-import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.databinding.BindingAdapter;
-import android.databinding.ObservableList;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.android.databinding.library.baseAdapters.BR;
 import com.meterohead.leave.database.dbabstract.ILeaveDbService;
-import com.meterohead.leave.database.realm.LeaveRealmService;
+import com.meterohead.leave.leavedetails.LeaveDetailsFragment;
+import com.meterohead.leave.mainactivity.IActivityController;
 import com.meterohead.leave.mainactivity.ToolbarViewModel;
+import com.meterohead.leave.mainactivity.ViewModel;
 import com.meterohead.leave.models.Leave;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.TimerTask;
 
-import io.realm.OrderedRealmCollection;
-import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmResults;
+public class LeaveListViewModel extends ViewModel {
 
-/**
- * Created by Lenovo on 2016-09-10.
- */
+    private ILeaveDbService leaveDbService;
+    private boolean visibility = false;
 
-public class LeaveListViewModel extends BaseObservable {
-
-    private ToolbarViewModel toolbarViewModel;
-    ILeaveDbService leaveDbService;
-
-    public LeaveListViewModel(ToolbarViewModel toolbarViewModel, ILeaveDbService leaveDbService) {
-        this.toolbarViewModel = toolbarViewModel;
+    public LeaveListViewModel(IActivityController activityController, ToolbarViewModel toolbarViewModel,
+                              ILeaveDbService leaveDbService) {
+        super(activityController, toolbarViewModel);
         this.leaveDbService = leaveDbService;
-    }
-
-    public ToolbarViewModel getToolbarViewModel() {
-        return toolbarViewModel;
-    }
-
-    @BindingAdapter("items")
-    public static void setItems(RecyclerView recyclerView, Collection<Leave> items) {
-        RealmResults<Leave> realmResults = (RealmResults<Leave>) items;
-        LeaveListAdapter adapter = new LeaveListAdapter(recyclerView.getContext(), realmResults);
-        recyclerView.setAdapter(adapter);
-        if(recyclerView.getLayoutManager() == null) {
-            recyclerView.setLayoutManager(
-                    new LinearLayoutManager(
-                            recyclerView.getContext(),
-                            LinearLayoutManager.VERTICAL,
-                            false
-                    )
-            );
-        }
     }
 
     @Bindable
@@ -60,6 +30,28 @@ public class LeaveListViewModel extends BaseObservable {
         return leaveDbService.getAllLeaves();
     }
 
+    public void onAddLeaveClick(View view) {
+        setFabVisibility(false);
+        view.postDelayed(new TimerTask() {
+            @Override
+            public void run() {
+                openLeaveDetailsScreenAdd();
+            }
+        }, 300);
+    }
 
+    private void openLeaveDetailsScreenAdd() {
+        getActivityController().changeFragment(LeaveDetailsFragment.newInstance(null));
+    }
 
+    @Bindable
+    public boolean getFabVisibility() {
+        return this.visibility;
+    }
+
+    @Bindable
+    public void setFabVisibility(boolean visibility) {
+        this.visibility = visibility;
+        notifyPropertyChanged(BR.fabVisibility);
+    }
 }
