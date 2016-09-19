@@ -35,6 +35,7 @@ public class LeaveDetailsFragment extends BaseFragment{
     Leave leaveObject;
 
     LeaveDetailsViewModel viewModel;
+    private IActivityController activityController;
 
     public static LeaveDetailsFragment newInstance(@Nullable Leave leaveObject) {
         LeaveDetailsFragmentBuilder builder = new LeaveDetailsFragmentBuilder();
@@ -47,7 +48,7 @@ public class LeaveDetailsFragment extends BaseFragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        IActivityController activityController = (IActivityController) context;
+        activityController = (IActivityController) context;
         viewModel = new LeaveDetailsViewModel(
                 activityController,
                 activityController.getToolbarViewModel(),
@@ -62,11 +63,7 @@ public class LeaveDetailsFragment extends BaseFragment{
         FragmentLeaveDetailsBinding binding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_leave_details, container, false);
         binding.setViewModel(viewModel);
-        ToolbarHeaderLeaveDetailsBinding toolbarBinding = DataBindingUtil.inflate(
-                inflater, R.layout.toolbar_header_leave_details,
-                (ViewGroup) getActivity().findViewById(R.id.action_bar_toolbar_header),
-                true
-        );
+        ToolbarHeaderLeaveDetailsBinding toolbarBinding = activityController.setToolbarHeaderViewBinding(R.layout.toolbar_header_leave_details);
         toolbarBinding.setViewModel(viewModel);
         return binding.getRoot();
     }

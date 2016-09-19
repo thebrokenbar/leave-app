@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ import io.realm.Realm;
  */
 @FragmentWithArgs
 public class LeaveListFragment extends BaseFragment {
-    private static final int SHOW_DETAILS_DELAY_MSEC = 100;
+    private static final int SHOW_FAB_BUTTON_DELAY_MILLIS = 100;
     LeaveListViewModel viewModel;
     Handler handler;
 
@@ -75,7 +74,7 @@ public class LeaveListFragment extends BaseFragment {
                 public void run() {
                     viewModel.setFabVisibility(true);
                 }
-            }, SHOW_DETAILS_DELAY_MSEC);
+            }, SHOW_FAB_BUTTON_DELAY_MILLIS);
         }
     }
 }

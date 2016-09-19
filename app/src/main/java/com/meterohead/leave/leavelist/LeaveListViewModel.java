@@ -16,6 +16,7 @@ import java.util.TimerTask;
 
 public class LeaveListViewModel extends ViewModel {
 
+    private static final int SHOW_DETAILS_DELAY_MILLIS = 200;
     private ILeaveDbService leaveDbService;
     private boolean visibility = false;
 
@@ -37,7 +38,7 @@ public class LeaveListViewModel extends ViewModel {
             public void run() {
                 openLeaveDetailsScreenAdd();
             }
-        }, 300);
+        }, SHOW_DETAILS_DELAY_MILLIS);
     }
 
     private void openLeaveDetailsScreenAdd() {

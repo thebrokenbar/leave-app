@@ -1,9 +1,11 @@
 package com.meterohead.leave.mainactivity;
 
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,14 +14,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.meterohead.leave.R;
 import com.meterohead.leave.databinding.ActivityMainBinding;
+import com.meterohead.leave.databinding.ToolbarHeaderLeaveDetailsBinding;
 import com.meterohead.leave.leavelist.LeaveListFragment;
-import com.transitionseverywhere.TransitionManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, IActivityController, IToolbarUpdater {
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawerLayout;
     ToolbarViewModel toolbarViewModel;
     private ActionBarDrawerToggle drawerToggle;
+    private ViewGroup toolbarHeaderFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,19 +63,20 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        setupMenu(toolbar);
+        setupToolbar(toolbar);
 
         changeFragment(LeaveListFragment.newInstance());
         getSupportFragmentManager()
                 .addOnBackStackChangedListener(new BackStackManager(getSupportFragmentManager(), this));
     }
 
-    private void setupMenu(Toolbar toolbar) {
+    private void setupToolbar(Toolbar toolbar) {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(
                 this, drawerLayout, 0, 0);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
+        toolbarHeaderFrame = (ViewGroup) findViewById(R.id.action_bar_toolbar_header);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -149,4 +155,21 @@ public class MainActivity extends AppCompatActivity
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.commit();
     }
+
+    @Override
+    public <T extends ViewDataBinding> T setToolbarHeaderViewBinding(@LayoutRes int layoutRes) {
+        toolbarHeaderFrame.removeAllViews();
+
+        if(layoutRes > 0) {
+            LayoutInflater inflater = getLayoutInflater();
+            return DataBindingUtil.inflate(
+                    inflater, layoutRes,
+                    toolbarHeaderFrame,
+                    true
+            );
+        }
+        return null;
+    }
+
+
 }
