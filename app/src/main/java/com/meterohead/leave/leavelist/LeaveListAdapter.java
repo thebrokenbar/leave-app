@@ -9,6 +9,8 @@ import com.meterohead.leave.R;
 import com.meterohead.leave.databinding.LeaveListItemBinding;
 import com.meterohead.leave.models.Leave;
 
+import java.text.SimpleDateFormat;
+
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 

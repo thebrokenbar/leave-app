@@ -13,6 +13,7 @@ import com.meterohead.leave.ActivityController;
 import com.meterohead.leave.BaseFragment;
 import com.meterohead.leave.R;
 import com.meterohead.leave.databinding.FragmentLeaveDetailsBinding;
+import com.meterohead.leave.databinding.LeaveDetailsFragmentContainerBinding;
 import com.meterohead.leave.models.Leave;
 
 import java.util.Date;
@@ -33,17 +34,16 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        ActivityController activityController = (ActivityController) context;
         viewModel = new LeaveDetailsViewModel(this,
-                (LeaveDetailsActivityViewModel) activityController.getViewModel(),
+                (LeaveDetailsActivityController) context,
                 leaveObject);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FragmentLeaveDetailsBinding binding = DataBindingUtil.inflate(inflater,
-                R.layout.fragment_leave_details, container, false);
+        LeaveDetailsFragmentContainerBinding binding = DataBindingUtil.inflate(inflater,
+                R.layout.leave_details_fragment_container, container, false);
         binding.setViewModel(viewModel);
         return binding.getRoot();
     }

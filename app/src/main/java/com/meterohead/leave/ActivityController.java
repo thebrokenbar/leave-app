@@ -9,6 +9,5 @@ import com.meterohead.leave.mainactivity.ActivityViewModel;
  */
 
 public interface ActivityController {
-    @NonNull
     ActivityViewModel getViewModel();
 }

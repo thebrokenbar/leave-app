@@ -3,20 +3,16 @@ package com.meterohead.leave.leavedetails;
 import android.databinding.Bindable;
 import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.widget.SeekBar;
 
 import com.google.firebase.crash.FirebaseCrash;
-import com.meterohead.leave.database.dbabstract.LeaveDbService;
+import com.meterohead.leave.ViewModel;
 import com.meterohead.leave.database.realm.LeaveRealmService;
 import com.meterohead.leave.database.realm.base.interfaces.IRealmCallback;
-import com.meterohead.leave.models.helpers.impl.RealmWorkingDays;
-import com.meterohead.leave.ViewModel;
-import com.meterohead.leave.models.helpers.WorkingDays;
 import com.meterohead.leave.models.Leave;
+import com.meterohead.leave.models.helpers.WorkingDays;
+import com.meterohead.leave.models.helpers.impl.RealmWorkingDays;
 import com.orhanobut.logger.Logger;
-
-import org.parceler.Parcel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,7 +33,7 @@ public class LeaveDetailsViewModel extends ViewModel {
     @NonNull
     private LeaveDetailsFragmentController fragmentController;
     @NonNull
-    private LeaveDetailsActivityViewModel activityViewModel;
+    private final LeaveDetailsActivityController activityController;
 
     @NonNull
     public Leave leaveObject;
@@ -45,10 +41,10 @@ public class LeaveDetailsViewModel extends ViewModel {
     private WorkingDays workingDays;
 
     public LeaveDetailsViewModel(@NonNull LeaveDetailsFragmentController fragmentController,
-                                 @NonNull LeaveDetailsActivityViewModel activityViewModel,
+                                 @NonNull LeaveDetailsActivityController activityController,
                                  @Nullable Leave leaveObject) {
         this.fragmentController = fragmentController;
-        this.activityViewModel =activityViewModel;
+        this.activityController = activityController;
         if(leaveObject == null) {
             this.leaveObject = new Leave();
         } else {
@@ -56,21 +52,14 @@ public class LeaveDetailsViewModel extends ViewModel {
         }
         this.leaveDays = new ObservableInt(DEFAULT_NUMBER_OF_DAYS);
         workingDays = new RealmWorkingDays(null, null);
-
-        activityViewModel.setOnConfirmClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onConfirm();
-            }
-        });
     }
 
-    private void onConfirm() {
+    public void onConfirm() {
         LeaveRealmService leaveDb = new LeaveRealmService(Realm.getDefaultInstance());
         leaveDb.addNewLeave(leaveObject, new IRealmCallback() {
             @Override
             public void onSuccess() {
-                getActivityViewModel().finishActivityWithResult(leaveObject);
+                activityController.returnResult(leaveObject);
             }
 
             @Override
@@ -79,7 +68,6 @@ public class LeaveDetailsViewModel extends ViewModel {
                 FirebaseCrash.report(error);
             }
         });
-
     }
 
     @Bindable
@@ -123,12 +111,6 @@ public class LeaveDetailsViewModel extends ViewModel {
     @Bindable
     public int getSeekBarMaximumValue() {
         return SEEK_BAR_MAXIMUM_VALUE;
-    }
-
-    @Bindable
-    @NonNull
-    public LeaveDetailsActivityViewModel getActivityViewModel() {
-        return activityViewModel;
     }
 
     public void onStartDateClick() {
@@ -176,7 +158,6 @@ public class LeaveDetailsViewModel extends ViewModel {
     @Bindable
     public void setEndDate(Date date) {
         leaveObject.setDateEnd(date);
-        getActivityViewModel().setConfirmButtonVisibility(true);
         notifyChange();
     }
 
