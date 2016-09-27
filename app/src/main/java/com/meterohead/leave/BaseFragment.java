@@ -1,4 +1,4 @@
-package com.meterohead.leave.mainactivity;
+package com.meterohead.leave;
 
 import android.support.v4.app.Fragment;
 

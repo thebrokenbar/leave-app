@@ -1,31 +1,183 @@
 package com.meterohead.leave.leavedetails;
 
 import android.databinding.Bindable;
+import android.databinding.ObservableInt;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.SeekBar;
 
-import com.meterohead.leave.mainactivity.IActivityController;
-import com.meterohead.leave.mainactivity.ToolbarViewModel;
-import com.meterohead.leave.mainactivity.ViewModel;
+import com.google.firebase.crash.FirebaseCrash;
+import com.meterohead.leave.database.dbabstract.LeaveDbService;
+import com.meterohead.leave.database.realm.LeaveRealmService;
+import com.meterohead.leave.database.realm.base.interfaces.IRealmCallback;
+import com.meterohead.leave.models.helpers.impl.RealmWorkingDays;
+import com.meterohead.leave.ViewModel;
+import com.meterohead.leave.models.helpers.WorkingDays;
 import com.meterohead.leave.models.Leave;
+import com.orhanobut.logger.Logger;
+
+import org.parceler.Parcel;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.annotation.Nullable;
+
+import io.realm.Realm;
 
 /**
  * Created by wierzchanowskig on 18.09.2016.
  */
 public class LeaveDetailsViewModel extends ViewModel {
 
-    @Nullable
-    private Leave leaveObject;
+    private static final int SEEK_BAR_MINIMUM_VALUE = 1;
+    private static final int SEEK_BAR_MAXIMUM_VALUE = 30;
+    private static final int DEFAULT_NUMBER_OF_DAYS = 5;
 
-    public LeaveDetailsViewModel(IActivityController activityController, ToolbarViewModel toolbarViewModel,
+    @NonNull
+    private LeaveDetailsFragmentController fragmentController;
+    @NonNull
+    private LeaveDetailsActivityViewModel activityViewModel;
+
+    @NonNull
+    public Leave leaveObject;
+    public final ObservableInt leaveDays;
+    private WorkingDays workingDays;
+
+    public LeaveDetailsViewModel(@NonNull LeaveDetailsFragmentController fragmentController,
+                                 @NonNull LeaveDetailsActivityViewModel activityViewModel,
                                  @Nullable Leave leaveObject) {
-        super(activityController, toolbarViewModel);
-        this.leaveObject = leaveObject;
+        this.fragmentController = fragmentController;
+        this.activityViewModel =activityViewModel;
+        if(leaveObject == null) {
+            this.leaveObject = new Leave();
+        } else {
+            this.leaveObject = leaveObject;
+        }
+        this.leaveDays = new ObservableInt(DEFAULT_NUMBER_OF_DAYS);
+        workingDays = new RealmWorkingDays(null, null);
+
+        activityViewModel.setOnConfirmClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onConfirm();
+            }
+        });
     }
 
-    @Nullable
+    private void onConfirm() {
+        LeaveRealmService leaveDb = new LeaveRealmService(Realm.getDefaultInstance());
+        leaveDb.addNewLeave(leaveObject, new IRealmCallback() {
+            @Override
+            public void onSuccess() {
+                getActivityViewModel().finishActivityWithResult(leaveObject);
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Logger.e(error, error.getMessage());
+                FirebaseCrash.report(error);
+            }
+        });
+
+    }
+
     @Bindable
-    public Leave getLeave() {
+    public SeekBar.OnSeekBarChangeListener getSeekBarChangeListener() {
+        return new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if(i < SEEK_BAR_MINIMUM_VALUE){
+                    seekBar.setProgress(SEEK_BAR_MINIMUM_VALUE);
+                    return;
+                }
+                if(b) {
+                    setEndDate(workingDays.getLastWorkingDay(i));
+                    notifyChange();
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        };
+    }
+
+    @Bindable
+    @NonNull
+    public Leave getLeaveObject() {
         return leaveObject;
     }
+
+    @Bindable
+    public int getSeekBarMinimumValue() {
+        return SEEK_BAR_MINIMUM_VALUE;
+    }
+
+    @Bindable
+    public int getSeekBarMaximumValue() {
+        return SEEK_BAR_MAXIMUM_VALUE;
+    }
+
+    @Bindable
+    @NonNull
+    public LeaveDetailsActivityViewModel getActivityViewModel() {
+        return activityViewModel;
+    }
+
+    public void onStartDateClick() {
+        fragmentController.showStartDatePickerDialog(leaveObject.getDateStart());
+    }
+
+    public void onEndDateClick() {
+        fragmentController.showEndDatePickerDialog(leaveObject.getDateEnd());
+    }
+
+    public String formatDate(Date date) {
+        if(date == null) {
+            return null;
+        }
+        return SimpleDateFormat.getDateInstance().format(date);
+    }
+
+    @Bindable
+    public int getDaysDifference() {
+        if(leaveObject.getDateEnd() == null || leaveObject.getDateStart() == null) {
+            return DEFAULT_NUMBER_OF_DAYS;
+        }
+        WorkingDays workingDays = new RealmWorkingDays(leaveObject.getDateStart(), leaveObject.getDateEnd());
+        return workingDays.getWorkingDaysCount();
+    }
+
+    void onStartDateResult(Date date) {
+        setStartDate(date);
+    }
+
+    void onEndDateResult(Date date) {
+        setEndDate(date);
+    }
+
+    @Bindable
+    public void setStartDate(Date date) {
+        leaveObject.setDateStart(date);
+        workingDays.setStartDate(date);
+        if(leaveObject.getDateEnd() == null) {
+            setEndDate(workingDays.getLastWorkingDay(DEFAULT_NUMBER_OF_DAYS));
+        }
+        notifyChange();
+    }
+
+    @Bindable
+    public void setEndDate(Date date) {
+        leaveObject.setDateEnd(date);
+        getActivityViewModel().setConfirmButtonVisibility(true);
+        notifyChange();
+    }
+
 }

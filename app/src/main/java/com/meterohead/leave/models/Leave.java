@@ -1,6 +1,8 @@
 package com.meterohead.leave.models;
 
+
 import org.parceler.Parcel;
+
 
 import java.util.Date;
 
@@ -13,6 +15,7 @@ import io.realm.annotations.PrimaryKey;
  */
 @Parcel(Parcel.Serialization.BEAN)
 public class Leave extends RealmObject{
+    public static final String PARAM_NAME = "LEAVE_OBJECT";
 
     @PrimaryKey
     private int id;

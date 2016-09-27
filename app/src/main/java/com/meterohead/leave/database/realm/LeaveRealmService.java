@@ -1,7 +1,7 @@
 package com.meterohead.leave.database.realm;
 
 import com.meterohead.leave.database.dbabstract.base.IDatabaseCallback;
-import com.meterohead.leave.database.dbabstract.ILeaveDbService;
+import com.meterohead.leave.database.dbabstract.LeaveDbService;
 import com.meterohead.leave.database.realm.base.RealmService;
 import com.meterohead.leave.database.realm.base.interfaces.IRealmCallback;
 import com.meterohead.leave.models.Leave;
@@ -15,7 +15,7 @@ import io.realm.RealmResults;
  * Created by Lenovo on 2016-09-16.
  */
 
-public class LeaveRealmService extends RealmService<Leave> implements ILeaveDbService {
+public class LeaveRealmService extends RealmService<Leave> implements LeaveDbService {
 
     public LeaveRealmService(Realm realm) {
         super(Leave.class, realm);

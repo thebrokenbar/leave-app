@@ -4,25 +4,19 @@ import android.databinding.Bindable;
 import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
-import com.meterohead.leave.database.dbabstract.ILeaveDbService;
-import com.meterohead.leave.leavedetails.LeaveDetailsFragment;
-import com.meterohead.leave.mainactivity.IActivityController;
-import com.meterohead.leave.mainactivity.ToolbarViewModel;
-import com.meterohead.leave.mainactivity.ViewModel;
+import com.meterohead.leave.ViewModel;
+import com.meterohead.leave.database.dbabstract.LeaveDbService;
 import com.meterohead.leave.models.Leave;
 
 import java.util.Collection;
-import java.util.TimerTask;
 
 public class LeaveListViewModel extends ViewModel {
+    private LeaveListFragmentController fragmentController;
+    private LeaveDbService leaveDbService;
+    private boolean visibility = true;
 
-    private static final int SHOW_DETAILS_DELAY_MILLIS = 200;
-    private ILeaveDbService leaveDbService;
-    private boolean visibility = false;
-
-    public LeaveListViewModel(IActivityController activityController, ToolbarViewModel toolbarViewModel,
-                              ILeaveDbService leaveDbService) {
-        super(activityController, toolbarViewModel);
+    public LeaveListViewModel(LeaveListFragmentController fragmentController, LeaveDbService leaveDbService) {
+        this.fragmentController = fragmentController;
         this.leaveDbService = leaveDbService;
     }
 
@@ -32,17 +26,11 @@ public class LeaveListViewModel extends ViewModel {
     }
 
     public void onAddLeaveClick(View view) {
-        setFabVisibility(false);
-        view.postDelayed(new TimerTask() {
-            @Override
-            public void run() {
-                openLeaveDetailsScreenAdd();
-            }
-        }, SHOW_DETAILS_DELAY_MILLIS);
+        openLeaveDetailsScreenAdd();
     }
 
     private void openLeaveDetailsScreenAdd() {
-        getActivityController().changeFragment(LeaveDetailsFragment.newInstance(null));
+        fragmentController.addNewLeave();
     }
 
     @Bindable

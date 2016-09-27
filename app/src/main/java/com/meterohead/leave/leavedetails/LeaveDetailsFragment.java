@@ -2,60 +2,42 @@ package com.meterohead.leave.leavedetails;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.f2prateek.dart.Dart;
-import com.f2prateek.dart.InjectExtra;
-import com.hannesdorfmann.fragmentargs.annotation.Arg;
-import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
-import com.hannesdorfmann.fragmentargs.bundler.ParcelerArgsBundler;
+import com.meterohead.leave.ActivityController;
+import com.meterohead.leave.BaseFragment;
 import com.meterohead.leave.R;
 import com.meterohead.leave.databinding.FragmentLeaveDetailsBinding;
-import com.meterohead.leave.databinding.FragmentLeaveListBinding;
-import com.meterohead.leave.databinding.ToolbarHeaderLeaveDetailsBinding;
-import com.meterohead.leave.mainactivity.BaseFragment;
-import com.meterohead.leave.mainactivity.IActivityController;
 import com.meterohead.leave.models.Leave;
 
-import org.parceler.Parcels;
+import java.util.Date;
 
 import javax.annotation.Nullable;
-@FragmentWithArgs
-public class LeaveDetailsFragment extends BaseFragment{
 
-    @Arg(required = false, bundler = ParcelerArgsBundler.class)
+public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFragmentController{
+
     Leave leaveObject;
 
     LeaveDetailsViewModel viewModel;
-    private IActivityController activityController;
 
-    public static LeaveDetailsFragment newInstance(@Nullable Leave leaveObject) {
-        LeaveDetailsFragmentBuilder builder = new LeaveDetailsFragmentBuilder();
-        if(leaveObject != null) {
-            builder.leaveObject(leaveObject);
-        }
-        return builder.build();
+    @Override
+    public void onCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        activityController = (IActivityController) context;
-        viewModel = new LeaveDetailsViewModel(
-                activityController,
-                activityController.getToolbarViewModel(),
-                leaveObject
-        );
+        ActivityController activityController = (ActivityController) context;
+        viewModel = new LeaveDetailsViewModel(this,
+                (LeaveDetailsActivityViewModel) activityController.getViewModel(),
+                leaveObject);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,14 +45,50 @@ public class LeaveDetailsFragment extends BaseFragment{
         FragmentLeaveDetailsBinding binding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_leave_details, container, false);
         binding.setViewModel(viewModel);
-        ToolbarHeaderLeaveDetailsBinding toolbarBinding = activityController.setToolbarHeaderViewBinding(R.layout.toolbar_header_leave_details);
-        toolbarBinding.setViewModel(viewModel);
         return binding.getRoot();
     }
 
     @Override
     protected void onBackStackResume() {
-        viewModel.getToolbarViewModel().setScrollEnabled(true);
-        viewModel.getToolbarViewModel().setTitle("Title");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(viewModel.leaveObject.getDateStart() == null) {
+            showStartDatePickerDialog(null);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Date date;
+        switch (requestCode) {
+            case START_DATE_PICKER_REQUEST_CODE:
+                date = (Date) data.getSerializableExtra(DateSetFragment.DATE_PARAM);
+                viewModel.onStartDateResult(date);
+                break;
+            case END_DATE_PICKER_REQUEST_CODE:
+                date = (Date) data.getSerializableExtra(DateSetFragment.DATE_PARAM);
+                viewModel.onEndDateResult(date);
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void showStartDatePickerDialog(@Nullable Date date) {
+        DateSetFragment.newInstance(this, date, START_DATE_PICKER_REQUEST_CODE).show(
+                getFragmentManager(), DateSetFragment.class.getSimpleName()
+        );
+    }
+
+    @Override
+    public void showEndDatePickerDialog(@Nullable Date date) {
+        DateSetFragment.newInstance(this, date, END_DATE_PICKER_REQUEST_CODE).show(
+                getFragmentManager(), DateSetFragment.class.getSimpleName()
+        );
     }
 }

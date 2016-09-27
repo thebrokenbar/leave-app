@@ -5,6 +5,8 @@ import com.facebook.stetho.BuildConfig;
 import com.facebook.stetho.Stetho;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -18,6 +20,7 @@ public class Application extends android.app.Application {
         super.onCreate();
 
         initializeRealm();
+        JodaTimeAndroid.init(this);
 
         if(BuildConfig.DEBUG) {
             initializeStetho();

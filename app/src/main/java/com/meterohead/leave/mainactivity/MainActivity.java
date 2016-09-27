@@ -1,73 +1,58 @@
 package com.meterohead.leave.mainactivity;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
+import com.meterohead.leave.FragmentActivity;
 import com.meterohead.leave.R;
 import com.meterohead.leave.databinding.ActivityMainBinding;
-import com.meterohead.leave.databinding.ToolbarHeaderLeaveDetailsBinding;
+import com.meterohead.leave.leavedetails.LeaveDetailsActivity;
+import com.meterohead.leave.leavedetails.LeaveDetailsFragment;
 import com.meterohead.leave.leavelist.LeaveListFragment;
+import com.meterohead.leave.models.Leave;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, IActivityController, IToolbarUpdater {
+import org.parceler.Parcel;
+import org.parceler.Parcels;
 
-    private static final int HEADER_FADE_ANIMATION_TIME_MSEC = 100;
-    DrawerLayout drawerLayout;
-    ToolbarViewModel toolbarViewModel;
+public class MainActivity extends FragmentActivity
+        implements NavigationView.OnNavigationItemSelectedListener, MainActivityController {
+
+    public static final int ADD_NEW_LEAVE_REQUEST_CODE = 101;
+    public static final int VIEW_LEAVE_REQUEST_CODE = 102;
+
+
+            DrawerLayout drawerLayout;
+    ActivityViewModel viewModel;
     private ActionBarDrawerToggle drawerToggle;
-    private ViewGroup toolbarHeaderFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbarViewModel =
-                new ToolbarViewModel(getResources().getDimensionPixelSize(R.dimen.scrollDefaultHeight));
+        viewModel = new ActivityViewModel();
         ActivityMainBinding activityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        activityBinding.setToolbarViewModel(toolbarViewModel);
+        activityBinding.setActivityViewModel(viewModel);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
-        final View toolbarHeader = findViewById(R.id.action_bar_toolbar_header);
-        appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
-            @Override
-            public void onStateChanged(AppBarLayout appBarLayout, State state) {
-                switch (state) {
-                    case COLLAPSED:
-                        toolbarHeader.animate().alpha(0).setDuration(HEADER_FADE_ANIMATION_TIME_MSEC);
-                        break;
-                    case EXPANDED:
-                        toolbarHeader.animate().alpha(1).setDuration(HEADER_FADE_ANIMATION_TIME_MSEC);
-                        break;
-                    default:
-                }
-            }
-        });
-
         setupToolbar(toolbar);
 
         changeFragment(LeaveListFragment.newInstance());
-        getSupportFragmentManager()
-                .addOnBackStackChangedListener(new BackStackManager(getSupportFragmentManager(), this));
+    }
+
+    @NonNull
+    @Override
+    public ActivityViewModel getViewModel() {
+        return viewModel;
     }
 
     private void setupToolbar(Toolbar toolbar) {
@@ -76,20 +61,9 @@ public class MainActivity extends AppCompatActivity
                 this, drawerLayout, 0, 0);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
-        toolbarHeaderFrame = (ViewGroup) findViewById(R.id.action_bar_toolbar_header);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    @Override
-    public void updateToolbarBackIcon(int backStackSize) {
-        if(backStackSize > 1) {
-            drawerToggle.setDrawerIndicatorEnabled(false);
-        } else {
-            drawerToggle.setDrawerIndicatorEnabled(true);
-        }
-        drawerToggle.syncState();
     }
 
     @Override
@@ -138,38 +112,29 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
     @Override
-    public ToolbarViewModel getToolbarViewModel() {
-        return toolbarViewModel;
+    public void openAddLeaveScreen() {
+        Intent leaveDetailsActivityIntent = new Intent(this, LeaveDetailsActivity.class);
+        startActivityForResult(leaveDetailsActivityIntent, ADD_NEW_LEAVE_REQUEST_CODE);
     }
 
     @Override
-    public void changeFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            transaction.replace(R.id.single_pane_activity_container, fragment);
-        } else {
-            transaction.add(R.id.single_pane_activity_container, fragment);
+    public void openLeaveDetailsScreen(@NonNull Leave leaveObject) {
+        Intent leaveDetailsActivityIntent = new Intent(this, LeaveDetailsActivity.class);
+        Bundle options = new Bundle(1);
+        options.putParcelable(Leave.PARAM_NAME, Parcels.wrap(leaveObject));
+        startActivityForResult(leaveDetailsActivityIntent, VIEW_LEAVE_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ADD_NEW_LEAVE_REQUEST_CODE:
+
+                break;
         }
-        transaction.addToBackStack(null);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        transaction.commit();
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
-
-    @Override
-    public <T extends ViewDataBinding> T setToolbarHeaderViewBinding(@LayoutRes int layoutRes) {
-        toolbarHeaderFrame.removeAllViews();
-
-        if(layoutRes > 0) {
-            LayoutInflater inflater = getLayoutInflater();
-            return DataBindingUtil.inflate(
-                    inflater, layoutRes,
-                    toolbarHeaderFrame,
-                    true
-            );
-        }
-        return null;
-    }
-
-
 }
