@@ -1,6 +1,7 @@
 package com.meterohead.leave.leavedetails;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -9,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.meterohead.leave.ActivityController;
+import com.google.firebase.crash.FirebaseCrash;
 import com.meterohead.leave.BaseFragment;
 import com.meterohead.leave.R;
-import com.meterohead.leave.databinding.FragmentLeaveDetailsBinding;
 import com.meterohead.leave.databinding.LeaveDetailsFragmentContainerBinding;
 import com.meterohead.leave.models.Leave;
+import com.orhanobut.logger.Logger;
+
+import org.parceler.Parcels;
 
 import java.util.Date;
 
@@ -34,8 +37,19 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Activity activity = (Activity) context;
+        Intent intent = activity.getIntent();
+        if(intent != null) {
+            try {
+                leaveObject = Parcels.unwrap(intent.getParcelableExtra(Leave.PARAM_NAME));
+            } catch (ClassCastException e) {
+                Logger.e(e, e.getMessage());
+                FirebaseCrash.report(e);
+            }
+        }
+
         viewModel = new LeaveDetailsViewModel(this,
-                (LeaveDetailsActivityController) context,
+                (LeaveDetailsActivityController) activity,
                 leaveObject);
     }
 

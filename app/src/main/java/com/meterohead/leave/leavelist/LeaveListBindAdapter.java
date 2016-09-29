@@ -4,6 +4,7 @@ import android.databinding.BindingAdapter;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.meterohead.leave.models.Leave;
 
@@ -11,14 +12,17 @@ import java.util.Collection;
 import java.util.TimerTask;
 
 import io.realm.RealmResults;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class LeaveListBindAdapter {
-    @BindingAdapter("items")
-    public static void setItems(RecyclerView recyclerView, Collection<Leave> items) {
+    @BindingAdapter({"items","android:onClick"})
+    public static void setItems(RecyclerView recyclerView, Collection<Leave> items, Action1<Leave> rxOnItemClickListener) {
         RealmResults<Leave> realmResults = (RealmResults<Leave>) items;
-        LeaveListAdapter adapter = new LeaveListAdapter(recyclerView.getContext(), realmResults);
-        recyclerView.setAdapter(adapter);
-        if (recyclerView.getLayoutManager() == null) {
+        LeaveListAdapter adapter = (LeaveListAdapter) recyclerView.getAdapter();
+        if(recyclerView.getLayoutManager() == null) {
             recyclerView.setLayoutManager(
                     new LinearLayoutManager(
                             recyclerView.getContext(),
@@ -27,9 +31,21 @@ public class LeaveListBindAdapter {
                     )
             );
         }
+        if(adapter == null) {
+            adapter = new LeaveListAdapter(recyclerView.getContext(), realmResults);
+            recyclerView.setAdapter(adapter);
+        }
+        adapter.updateData(realmResults);
+        if(rxOnItemClickListener != null) {
+            adapter.getItemClickObservable()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.computation())
+                    .subscribe(rxOnItemClickListener);
+        }
+        adapter.notifyDataSetChanged();
     }
 
-    @BindingAdapter("showed")
+    @BindingAdapter("android:visibility")
     public static void setVisibility(final FloatingActionButton fab, boolean visibility) {
         if(visibility) {
             fab.show();

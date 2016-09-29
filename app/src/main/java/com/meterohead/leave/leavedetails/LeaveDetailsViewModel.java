@@ -47,11 +47,12 @@ public class LeaveDetailsViewModel extends ViewModel {
         this.activityController = activityController;
         if(leaveObject == null) {
             this.leaveObject = new Leave();
+            workingDays = new RealmWorkingDays(null, null);
         } else {
             this.leaveObject = leaveObject;
+            workingDays = new RealmWorkingDays(this.leaveObject.getDateStart(), this.leaveObject.getDateEnd());
         }
         this.leaveDays = new ObservableInt(DEFAULT_NUMBER_OF_DAYS);
-        workingDays = new RealmWorkingDays(null, null);
     }
 
     public void onConfirm() {

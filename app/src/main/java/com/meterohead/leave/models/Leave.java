@@ -13,7 +13,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Lenovo on 2016-09-13.
  */
-@Parcel(Parcel.Serialization.BEAN)
+@Parcel(value = Parcel.Serialization.BEAN, analyze = {Leave.class}, implementations = {io.realm.LeaveRealmProxy.class})
 public class Leave extends RealmObject{
     public static final String PARAM_NAME = "LEAVE_OBJECT";
 

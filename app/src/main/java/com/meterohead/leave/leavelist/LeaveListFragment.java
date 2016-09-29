@@ -3,7 +3,6 @@ package com.meterohead.leave.leavelist;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import com.meterohead.leave.database.realm.LeaveRealmService;
 import com.meterohead.leave.databinding.FragmentLeaveListBinding;
 import com.meterohead.leave.mainactivity.ActivityViewModel;
 import com.meterohead.leave.mainactivity.MainActivityController;
+import com.meterohead.leave.models.Leave;
 
 import io.realm.Realm;
 
@@ -70,5 +70,10 @@ public class LeaveListFragment extends BaseFragment implements LeaveListFragment
     @Override
     public void addNewLeave() {
         activityController.openAddLeaveScreen();
+    }
+
+    @Override
+    public void editLeave(Leave leaveObject) {
+        activityController.openLeaveDetailsScreen(leaveObject);
     }
 }

@@ -10,6 +10,8 @@ import com.meterohead.leave.models.Leave;
 
 import java.util.Collection;
 
+import rx.functions.Action1;
+
 public class LeaveListViewModel extends ViewModel {
     private LeaveListFragmentController fragmentController;
     private LeaveDbService leaveDbService;
@@ -29,10 +31,6 @@ public class LeaveListViewModel extends ViewModel {
         openLeaveDetailsScreenAdd();
     }
 
-    private void openLeaveDetailsScreenAdd() {
-        fragmentController.addNewLeave();
-    }
-
     @Bindable
     public boolean getFabVisibility() {
         return this.visibility;
@@ -43,4 +41,23 @@ public class LeaveListViewModel extends ViewModel {
         this.visibility = visibility;
         notifyPropertyChanged(BR.fabVisibility);
     }
+
+    @Bindable
+    public Action1<Leave> getOnItemClickListener() {
+        return new Action1<Leave>() {
+            @Override
+            public void call(Leave leave) {
+                openLeaveDetailsScreenEdit(leave);
+            }
+        };
+    }
+
+    private void openLeaveDetailsScreenAdd() {
+        fragmentController.addNewLeave();
+    }
+
+    private void openLeaveDetailsScreenEdit(Leave leaveObject) {
+        fragmentController.editLeave(leaveObject);
+    }
+
 }

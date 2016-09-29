@@ -122,8 +122,7 @@ public class MainActivity extends FragmentActivity
     @Override
     public void openLeaveDetailsScreen(@NonNull Leave leaveObject) {
         Intent leaveDetailsActivityIntent = new Intent(this, LeaveDetailsActivity.class);
-        Bundle options = new Bundle(1);
-        options.putParcelable(Leave.PARAM_NAME, Parcels.wrap(leaveObject));
+        leaveDetailsActivityIntent.putExtra(Leave.PARAM_NAME, Parcels.wrap(leaveObject));
         startActivityForResult(leaveDetailsActivityIntent, VIEW_LEAVE_REQUEST_CODE);
     }
 
