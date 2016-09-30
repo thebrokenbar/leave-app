@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.meterohead.leave.leavedetails.LeaveDetailsViewModel"/>
+            type="com.meteorhead.leave.leavedetails.LeaveDetailsViewModel"/>
     </data>
     <android.support.constraint.ConstraintLayout
         xmlns:tools="http://schemas.android.com/tools"

@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.meterohead.leave.leavelist.LeaveListViewModel"/>
+            type="com.meteorhead.leave.leavelist.LeaveListViewModel"/>
     </data>
     <android.support.design.widget.CoordinatorLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"

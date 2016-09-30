@@ -5,12 +5,12 @@
     <data>
         <variable
             name="viewModel"
-            type="com.meterohead.leave.leavedetails.LeaveDetailsViewModel" />
+            type="com.meteorhead.leave.leavedetails.LeaveDetailsViewModel" />
         <import type="android.view.View"/>
     </data>
 
     <android.support.v4.widget.NestedScrollView
-        tools:context="com.meterohead.leave.leavedetails.LeaveDetailsFragment"
+        tools:context="com.meteorhead.leave.leavedetails.LeaveDetailsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

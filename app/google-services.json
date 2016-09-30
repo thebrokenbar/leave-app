@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:643775717352:android:683de6018f86504b",
         "android_client_info": {
-          "package_name": "com.meterohead.leave"
+          "package_name": "com.meteorhead.leave"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "643775717352-jts45daj3soif14tap4bvtlmdgj8u8fa.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.meterohead.leave",
+            "package_name": "com.meteorhead.leave",
             "certificate_hash": "79708057EB8DCC3A5811025BCFD164CA86098C62"
           }
         },

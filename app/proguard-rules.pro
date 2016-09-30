@@ -18,17 +18,4 @@
 -keepattributes Signature
 -keepattributes *Annotation*
 
--dontwarn com.f2prateek.dart.internal.**
--keep class **$$ExtraInjector { *; }
--keepclasseswithmembernames class * {
-    @com.f2prateek.dart.* <fields>;
-}
-#for dart 2.0 only
--keep class **Henson { *; }
--keep class **$$IntentBuilder { *; }
-# Parcel library
--keep interface org.parceler.Parcel
--keep @org.parceler.Parcel class * { *; }
--keep class **$$Parcelable { *; }
-
 -keep class com.hannesdorfmann.fragmentargs.** { *; }

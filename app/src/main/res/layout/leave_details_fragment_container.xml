@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.meterohead.leave.leavedetails.LeaveDetailsViewModel"/>
+            type="com.meteorhead.leave.leavedetails.LeaveDetailsViewModel"/>
     </data>
     <android.support.design.widget.CoordinatorLayout
         xmlns:bind="http://schemas.android.com/apk/res-auto"
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="false"
-        tools:context="com.meterohead.leave.mainactivity.MainActivity">
+        tools:context="com.meteorhead.leave.mainactivity.MainActivity">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBarLayout"
