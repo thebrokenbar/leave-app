@@ -15,5 +15,6 @@ public interface LeaveDbService {
     List<Leave> getAllLeaves();
 
     void addOrUpdate(Leave leaveToAdd, IDatabaseCallback callback);
+    void insertLeave(Leave leaveToInsert);
     void removeLeave(Leave leaveToRemove);
 }

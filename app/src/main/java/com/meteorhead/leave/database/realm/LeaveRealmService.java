@@ -62,6 +62,16 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
     }
 
     @Override
+    public void insertLeave(final Leave leaveToInsert) {
+        getServiceRealm().executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(leaveToInsert);
+            }
+        });
+    }
+
+    @Override
     public void removeLeave(final Leave leaveToRemove) {
         getServiceRealm().executeTransaction(new Realm.Transaction() {
             @Override

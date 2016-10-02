@@ -33,29 +33,47 @@ public class LeaveListRecyclerAdapter extends RealmRecyclerViewAdapter<Leave, Le
     private PublishSubject<Leave> onClickSubject = PublishSubject.create();
     private SparseArrayCompat<RecyclerViewAdapterSelector> selectionArray;
     private final LeaveListViewModel leaveListViewModel;
+    private final List<Leave> recentlyRemovedItems = new ArrayList<>();
 
     public LeaveListRecyclerAdapter(Context activityContext, OrderedRealmCollection<Leave> data, LeaveListViewModel leaveListViewModel) {
         super(activityContext, data, true);
         this.selectionArray = new SparseArrayCompat<>(data.size());
         this.leaveListViewModel = leaveListViewModel;
         subscribeOnRemoveTask();
+        subscribeOnRemoveUndoTask();
     }
 
     private void subscribeOnRemoveTask() {
         leaveListViewModel.getRemoveTaskObservable().subscribe(new Action1<Object>() {
             @Override
             public void call(Object o) {
+                recentlyRemovedItems.clear();
                 List<Leave> selectedItems = getSelectedItems();
                 if(selectedItems != null) {
                     for (Leave item : selectedItems) {
+                        Leave itemCopy = new Leave();
+                        itemCopy.set(item);
+                        itemCopy.setId(item.getId());
+                        recentlyRemovedItems.add(itemCopy);
                         leaveListViewModel.getLeaveDbService().removeLeave(item);
                     }
+                    leaveListViewModel.showUndoSnackBar(selectedItems.size());
                     setSelectionToAll(false);
                 }
             }
         });
     }
 
+    private void subscribeOnRemoveUndoTask() {
+        leaveListViewModel.getRemoveUndoTaskObservable().subscribe(new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                for (Leave item : recentlyRemovedItems) {
+                    leaveListViewModel.getLeaveDbService().insertLeave(item);
+                }
+            }
+        });
+    }
 
     @Override
     public LeaveViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

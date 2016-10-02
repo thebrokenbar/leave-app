@@ -19,6 +19,7 @@ public class LeaveListViewModel extends ViewModel {
     private boolean selectionMode = false;
 
     private PublishSubject<Object> removeTaskPublishSubject = PublishSubject.create();
+    private PublishSubject<Object> removeUndoTaskPublishSubject = PublishSubject.create();
 
     public LeaveListViewModel(LeaveListFragmentController fragmentController, LeaveDbService leaveDbService) {
         this.fragmentController = fragmentController;
@@ -74,4 +75,20 @@ public class LeaveListViewModel extends ViewModel {
     public LeaveDbService getLeaveDbService() {
         return leaveDbService;
     }
+
+    public Observable<Object> getRemoveUndoTaskObservable() {
+        return removeUndoTaskPublishSubject.asObservable();
+    }
+
+    public void showUndoSnackBar(int removedItemsCount) {
+        fragmentController.showUndoSnackBar(removedItemsCount).subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean actionClicked) {
+                if(actionClicked) {
+                    removeUndoTaskPublishSubject.onNext(0);
+                }
+            }
+        });
+    }
+
 }
