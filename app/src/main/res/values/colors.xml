@@ -8,5 +8,7 @@
     <color name="colorTextLight">#ffffff</color>
     <color name="colorPrimaryText">#20242c</color>
     <color name="colorPrimaryTextDisabled">#2f3339</color>
+    <color name="colorPaperBackground">#ffffff</color>
+    <color name="colorPaperBackgroundChecked">#e5f0f7</color>
 
 </resources>
