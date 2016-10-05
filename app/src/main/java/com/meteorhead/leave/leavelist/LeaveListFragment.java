@@ -22,6 +22,7 @@ import com.meteorhead.leave.mainactivity.MainActivityController;
 import com.meteorhead.leave.models.Leave;
 
 import java.util.ArrayList;
+import java.util.TimerTask;
 
 import io.realm.Realm;
 import rx.Observable;
@@ -70,6 +71,12 @@ public class LeaveListFragment extends BaseFragment implements LeaveListFragment
         binding.setViewModel(viewModel);
         rvLeaveList = (RecyclerView) binding.getRoot().findViewById(R.id.rvLeaveList);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        viewModel.onStart();
     }
 
     @Override

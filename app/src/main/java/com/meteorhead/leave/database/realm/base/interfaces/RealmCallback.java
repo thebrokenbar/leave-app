@@ -4,7 +4,7 @@
 
 package com.meteorhead.leave.database.realm.base.interfaces;
 
-import com.meteorhead.leave.database.dbabstract.base.IDatabaseCallback;
+import com.meteorhead.leave.database.dbabstract.base.DatabaseCallback;
 
 import io.realm.Realm;
 
@@ -13,5 +13,5 @@ import io.realm.Realm;
  * MeteorHead - All rights reserved.
  */
 
-public interface IRealmCallback extends IDatabaseCallback, Realm.Transaction.OnSuccess, Realm.Transaction.OnError {
+public interface RealmCallback extends DatabaseCallback, Realm.Transaction.OnSuccess, Realm.Transaction.OnError {
 }

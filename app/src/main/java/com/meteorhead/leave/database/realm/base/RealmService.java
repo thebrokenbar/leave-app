@@ -4,8 +4,8 @@
 
 package com.meteorhead.leave.database.realm.base;
 
-import com.meteorhead.leave.database.dbabstract.base.IDatabaseCallback;
-import com.meteorhead.leave.database.realm.base.interfaces.IRealmCallback;
+import com.meteorhead.leave.database.dbabstract.base.DatabaseCallback;
+import com.meteorhead.leave.database.realm.base.interfaces.RealmCallback;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -38,11 +38,11 @@ public abstract class RealmService<E extends RealmObject> {
         return dataObjectClass;
     }
 
-    protected IRealmCallback convertCallback(IDatabaseCallback callback) {
-        if(callback instanceof IRealmCallback) {
-            return (IRealmCallback) callback;
+    protected RealmCallback convertCallback(DatabaseCallback callback) {
+        if(callback instanceof RealmCallback) {
+            return (RealmCallback) callback;
         } else {
-            throw new IllegalArgumentException("Every RealmService should use IRealmCallback");
+            throw new IllegalArgumentException("Every RealmService should use RealmCallback");
         }
     }
 

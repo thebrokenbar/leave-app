@@ -1,15 +1,18 @@
 package com.meteorhead.leave.database.realm;
 
-import com.meteorhead.leave.database.dbabstract.base.IDatabaseCallback;
+import com.meteorhead.leave.database.dbabstract.base.DatabaseCallback;
 import com.meteorhead.leave.database.dbabstract.LeaveDbService;
+import com.meteorhead.leave.database.dbabstract.base.DatabaseCallbackQuery;
 import com.meteorhead.leave.database.realm.base.RealmService;
-import com.meteorhead.leave.database.realm.base.interfaces.IRealmCallback;
+import com.meteorhead.leave.database.realm.base.interfaces.RealmCallback;
+import com.meteorhead.leave.database.realm.base.interfaces.RealmCallbackQuery;
 import com.meteorhead.leave.models.Leave;
 
 import java.sql.Date;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -17,7 +20,7 @@ import io.realm.Sort;
  * Created by Lenovo on 2016-09-16.
  */
 
-public class LeaveRealmService extends RealmService<Leave> implements LeaveDbService {
+public class LeaveRealmService extends RealmService<Leave> implements LeaveDbService<RealmResults<Leave>> {
 
     public LeaveRealmService(Realm realm) {
         super(Leave.class, realm);
@@ -37,12 +40,26 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
     }
 
     @Override
+    public void getAllLeavesAsync(final DatabaseCallbackQuery<RealmResults<Leave>> callback) {
+        final RealmResults<Leave> result = getServiceRealm().where(Leave.class)
+                .findAllSortedAsync(Leave.FIELD_DATE_START, Sort.ASCENDING);
+
+        result.addChangeListener(new RealmChangeListener<RealmResults<Leave>>() {
+            @Override
+            public void onChange(RealmResults<Leave> element) {
+                callback.onSuccess(element);
+                result.removeChangeListeners();
+            }
+        });
+    }
+
+    @Override
     public Leave getLeaveById(int id) {
         return getServiceRealm().where(Leave.class).equalTo(Leave.FIELD_ID, id).findFirst();
     }
 
     @Override
-    public void addOrUpdate(final Leave leaveToAdd, IDatabaseCallback callback) throws IllegalArgumentException{
+    public void addOrUpdate(final Leave leaveToAdd, DatabaseCallback callback) throws IllegalArgumentException{
         final Leave found = getServiceRealm().where(Leave.class).equalTo(Leave.FIELD_ID, leaveToAdd.getId()).findFirst();
         if(found != null) {
             try {
@@ -57,7 +74,7 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
                 callback.onError(e);
             }
         } else {
-            IRealmCallback realmCallback = convertCallback(callback);
+            RealmCallback realmCallback = convertCallback(callback);
             getServiceRealm().executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -69,8 +86,8 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
     }
 
     @Override
-    public void insertLeave(final Leave leaveToInsert, IDatabaseCallback callback) {
-        IRealmCallback realmCallback = convertCallback(callback);
+    public void insertLeave(final Leave leaveToInsert, DatabaseCallback callback) {
+        RealmCallback realmCallback = convertCallback(callback);
         getServiceRealm().executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -80,8 +97,8 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
     }
 
     @Override
-    public void insertLeaves(final List<Leave> leavesToInsert, IDatabaseCallback callback) {
-        IRealmCallback realmCallback = convertCallback(callback);
+    public void insertLeaves(final List<Leave> leavesToInsert, DatabaseCallback callback) {
+        RealmCallback realmCallback = convertCallback(callback);
         getServiceRealm().executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {

@@ -17,8 +17,12 @@ import rx.schedulers.Schedulers;
 
 public class LeaveListBindAdapter {
     @BindingAdapter({"items","android:onClick", "viewModel"})
-    public static void setItems(RecyclerView recyclerView, Collection<Leave> items, Action1<Leave> rxOnItemClickListener,
-                                LeaveListViewModel leaveListViewModel) {
+    public static void setItems(final RecyclerView recyclerView, Collection<Leave> items, final Action1<Leave> rxOnItemClickListener,
+                                final LeaveListViewModel leaveListViewModel) {
+        if(items == null) {
+            return;
+        }
+
         RealmResults<Leave> realmResults = (RealmResults<Leave>) items;
         LeaveListRecyclerAdapter adapter = (LeaveListRecyclerAdapter) recyclerView.getAdapter();
         if(recyclerView.getLayoutManager() == null) {

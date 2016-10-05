@@ -4,20 +4,22 @@
 
 package com.meteorhead.leave.database.dbabstract;
 
-import com.meteorhead.leave.database.dbabstract.base.IDatabaseCallback;
+import com.meteorhead.leave.database.dbabstract.base.DatabaseCallback;
+import com.meteorhead.leave.database.dbabstract.base.DatabaseCallbackQuery;
 import com.meteorhead.leave.models.Leave;
 
 import java.sql.Date;
 import java.util.List;
 
-public interface LeaveDbService {
+public interface LeaveDbService<T> {
     List<Leave> findLeaveBetweenDates(final Date startDate, final Date endDate);
     List<Leave> getAllLeaves();
+    void getAllLeavesAsync(DatabaseCallbackQuery<T> callback);
     Leave getLeaveById(int id);
 
-    void addOrUpdate(Leave leaveToAdd, IDatabaseCallback callback);
-    void insertLeave(Leave leaveToInsert, IDatabaseCallback callback);
-    void insertLeaves(List<Leave> leavesToInsert, IDatabaseCallback callback);
+    void addOrUpdate(Leave leaveToAdd, DatabaseCallback callback);
+    void insertLeave(Leave leaveToInsert, DatabaseCallback callback);
+    void insertLeaves(List<Leave> leavesToInsert, DatabaseCallback callback);
     void removeLeave(Leave leaveToRemove);
     void removeLeaves(List<Leave> leaveToRemove);
     void finish();

@@ -5,21 +5,15 @@ import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
 import android.widget.SeekBar;
 
-import com.google.firebase.crash.FirebaseCrash;
 import com.meteorhead.leave.ViewModel;
-import com.meteorhead.leave.database.realm.LeaveRealmService;
-import com.meteorhead.leave.database.realm.base.interfaces.IRealmCallback;
 import com.meteorhead.leave.models.Leave;
 import com.meteorhead.leave.models.helpers.WorkingDays;
 import com.meteorhead.leave.models.helpers.impl.RealmWorkingDays;
-import com.orhanobut.logger.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.annotation.Nullable;
-
-import io.realm.Realm;
 
 /**
  * Created by wierzchanowskig on 18.09.2016.

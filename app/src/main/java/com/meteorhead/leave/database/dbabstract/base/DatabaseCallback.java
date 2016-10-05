@@ -9,7 +9,7 @@ package com.meteorhead.leave.database.dbabstract.base;
  * MeteorHead - All rights reserved.
  */
 
-public interface IDatabaseCallback {
+public interface DatabaseCallback {
     void onSuccess();
     void onError(Throwable error);
 }

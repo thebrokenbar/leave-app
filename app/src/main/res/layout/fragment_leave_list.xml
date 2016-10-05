@@ -4,6 +4,7 @@
         <variable
             name="viewModel"
             type="com.meteorhead.leave.leavelist.LeaveListViewModel"/>
+        <import type="android.view.View" />
     </data>
     <android.support.design.widget.CoordinatorLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,7 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ProgressBar
+            android:visibility="@{viewModel.itemsList == null ? View.VISIBLE : View.GONE}"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/progressBar2"
+            android:padding="120dp"/>
+
         <android.support.v7.widget.RecyclerView
+            android:visibility="@{viewModel.itemsList != null ? View.VISIBLE : View.GONE}"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
             android:clipToPadding="false"
@@ -28,7 +38,7 @@
             android:layout_marginBottom="15dp"
             android:layout_marginRight="15dp"
             android:onClick="@{() -> viewModel.onAddLeaveClick()}"
-            android:visibility="@{!viewModel.selectionMode}"
+            android:visibility="@{!viewModel.selectionMode &amp;&amp; viewModel.itemsList != null}"
             app:fabSize="normal"
             android:id="@+id/fabAddLeave"
             app:srcCompat="@drawable/ic_add_white_24dp"
