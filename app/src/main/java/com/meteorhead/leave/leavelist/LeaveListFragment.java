@@ -1,6 +1,7 @@
 package com.meteorhead.leave.leavelist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,19 +16,27 @@ import com.meteorhead.leave.BaseFragment;
 import com.meteorhead.leave.R;
 import com.meteorhead.leave.database.realm.LeaveRealmService;
 import com.meteorhead.leave.databinding.FragmentLeaveListBinding;
+import com.meteorhead.leave.leavedetails.LeaveDetailsActivity;
 import com.meteorhead.leave.mainactivity.ActivityViewModel;
 import com.meteorhead.leave.mainactivity.MainActivityController;
 import com.meteorhead.leave.models.Leave;
 
+import java.util.ArrayList;
+
 import io.realm.Realm;
 import rx.Observable;
 import rx.subjects.PublishSubject;
+
+import static com.meteorhead.leave.leavedetails.LeaveDetailsActivityController.RESULT_CODE_ADD;
+import static com.meteorhead.leave.leavedetails.LeaveDetailsActivityController.RESULT_CODE_REMOVE;
 
 /**
  * Created by Lenovo on 2016-09-10.
  */
 @FragmentWithArgs
 public class LeaveListFragment extends BaseFragment implements LeaveListFragmentController {
+    public static final int LEAVE_EDIT_FORM = 101;
+
     LeaveListViewModel viewModel;
     private ActivityViewModel activityViewModel;
     MainActivityController activityController;
@@ -75,12 +84,15 @@ public class LeaveListFragment extends BaseFragment implements LeaveListFragment
 
     @Override
     public void addNewLeave() {
-        activityController.openAddLeaveScreen();
+        Intent leaveDetailsActivityIntent = new Intent(getActivity(), LeaveDetailsActivity.class);
+        startActivityForResult(leaveDetailsActivityIntent, LEAVE_EDIT_FORM);
     }
 
     @Override
     public void editLeave(Leave leaveObject) {
-        activityController.openLeaveDetailsScreen(leaveObject);
+        Intent leaveDetailsActivityIntent = new Intent(getActivity(), LeaveDetailsActivity.class);
+        leaveDetailsActivityIntent.putExtra(Leave.PARAM_NAME, leaveObject);
+        startActivityForResult(leaveDetailsActivityIntent, LEAVE_EDIT_FORM);
     }
 
     @Override
@@ -103,5 +115,28 @@ public class LeaveListFragment extends BaseFragment implements LeaveListFragment
                     }
                 }).show();
         return undoClickTaskPublishSubject.asObservable();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == LEAVE_EDIT_FORM) {
+            if(resultCode == 0) {
+                return;
+            }
+            Leave leaveObject = data.getParcelableExtra(Leave.PARAM_NAME);
+            switch (resultCode) {
+                case RESULT_CODE_ADD:
+                    viewModel.addOrUpdateLeave(leaveObject);
+                    break;
+                case RESULT_CODE_REMOVE:
+                    leaveObject = viewModel.getLeaveDbService().getLeaveById(leaveObject.getId());
+                    ArrayList<Leave> leavesToRemove = new ArrayList<Leave>(1);
+                    leavesToRemove.add(leaveObject);
+                    viewModel.removeLeaves(leavesToRemove);
+                    break;
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

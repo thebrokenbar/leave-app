@@ -56,21 +56,7 @@ public class LeaveDetailsViewModel extends ViewModel {
     }
 
     public void onConfirm() {
-        final LeaveRealmService leaveDb = new LeaveRealmService(Realm.getDefaultInstance());
-        leaveDb.addOrUpdate(leaveObject, new IRealmCallback() {
-            @Override
-            public void onSuccess() {
-                activityController.returnResult(leaveObject);
-                leaveDb.close();
-            }
-
-            @Override
-            public void onError(Throwable error) {
-                Logger.e(error, error.getMessage());
-                FirebaseCrash.report(error);
-                leaveDb.close();
-            }
-        });
+        activityController.returnResult(LeaveDetailsActivityController.RESULT_CODE_ADD,leaveObject);
     }
 
     @Bindable
@@ -164,4 +150,7 @@ public class LeaveDetailsViewModel extends ViewModel {
         notifyChange();
     }
 
+    public void removeLeave() {
+        activityController.returnResult(LeaveDetailsActivityController.RESULT_CODE_REMOVE, leaveObject);
+    }
 }

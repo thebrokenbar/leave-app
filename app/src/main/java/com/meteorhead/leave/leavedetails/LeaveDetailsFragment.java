@@ -6,7 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,10 +27,12 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
 public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFragmentController{
 
     Leave leaveObject;
-
     LeaveDetailsViewModel viewModel;
 
     @Override
@@ -46,6 +53,8 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
                 FirebaseCrash.report(e);
             }
         }
+
+        setHasOptionsMenu(leaveObject != null);
 
         viewModel = new LeaveDetailsViewModel(this,
                 (LeaveDetailsActivityController) activity,
@@ -72,6 +81,23 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
         if(viewModel.leaveObject.getDateStart() == null) {
             showStartDatePickerDialog(null);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.details_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.details_menu_remove:
+                viewModel.removeLeave();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -20,4 +20,6 @@ public class ActivityViewModel extends ViewModel{
     public void setTitle(String title) {
         this.title = title;
     }
+
+
 }

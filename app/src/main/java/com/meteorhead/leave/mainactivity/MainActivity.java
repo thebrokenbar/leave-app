@@ -22,9 +22,6 @@ import com.meteorhead.leave.models.Leave;
 public class MainActivity extends FragmentActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainActivityController {
 
-    public static final int ADD_NEW_LEAVE_REQUEST_CODE = 101;
-    public static final int VIEW_LEAVE_REQUEST_CODE = 102;
-
     DrawerLayout drawerLayout;
     ActivityViewModel viewModel;
     private ActionBarDrawerToggle drawerToggle;
@@ -77,8 +74,7 @@ public class MainActivity extends FragmentActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -108,28 +104,4 @@ public class MainActivity extends FragmentActivity
         return true;
     }
 
-
-    @Override
-    public void openAddLeaveScreen() {
-        Intent leaveDetailsActivityIntent = new Intent(this, LeaveDetailsActivity.class);
-        startActivityForResult(leaveDetailsActivityIntent, ADD_NEW_LEAVE_REQUEST_CODE);
-    }
-
-    @Override
-    public void openLeaveDetailsScreen(@NonNull Leave leaveObject) {
-        Intent leaveDetailsActivityIntent = new Intent(this, LeaveDetailsActivity.class);
-        leaveDetailsActivityIntent.putExtra(Leave.PARAM_NAME, leaveObject);
-        startActivityForResult(leaveDetailsActivityIntent, VIEW_LEAVE_REQUEST_CODE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case ADD_NEW_LEAVE_REQUEST_CODE:
-
-                break;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 }

@@ -13,8 +13,12 @@ import java.util.List;
 public interface LeaveDbService {
     List<Leave> findLeaveBetweenDates(final Date startDate, final Date endDate);
     List<Leave> getAllLeaves();
+    Leave getLeaveById(int id);
 
     void addOrUpdate(Leave leaveToAdd, IDatabaseCallback callback);
-    void insertLeave(Leave leaveToInsert);
+    void insertLeave(Leave leaveToInsert, IDatabaseCallback callback);
+    void insertLeaves(List<Leave> leavesToInsert, IDatabaseCallback callback);
     void removeLeave(Leave leaveToRemove);
+    void removeLeaves(List<Leave> leaveToRemove);
+    void finish();
 }

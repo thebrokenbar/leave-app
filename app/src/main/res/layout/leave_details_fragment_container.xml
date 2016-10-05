@@ -40,7 +40,7 @@
                     android:theme="@style/AppTheme.Toolbar"
                     app:layout_collapseMode="pin"
                     android:fitsSystemWindows="true"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
                 </android.support.v7.widget.Toolbar>
             </android.support.design.widget.CollapsingToolbarLayout>
 

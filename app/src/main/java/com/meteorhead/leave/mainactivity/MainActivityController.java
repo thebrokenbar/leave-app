@@ -9,6 +9,4 @@ import com.meteorhead.leave.models.Leave;
  */
 
 public interface MainActivityController extends com.meteorhead.leave.ActivityController {
-    void openAddLeaveScreen();
-    void openLeaveDetailsScreen(@NonNull Leave leaveObject);
 }

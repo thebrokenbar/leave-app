@@ -7,9 +7,11 @@ import com.meteorhead.leave.database.realm.base.interfaces.IRealmCallback;
 import com.meteorhead.leave.models.Leave;
 
 import java.sql.Date;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by Lenovo on 2016-09-16.
@@ -31,7 +33,12 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
     @Override
     public RealmResults<Leave> getAllLeaves() {
         return getServiceRealm().where(Leave.class)
-                .findAll();
+                .findAllSorted(Leave.FIELD_DATE_START, Sort.ASCENDING);
+    }
+
+    @Override
+    public Leave getLeaveById(int id) {
+        return getServiceRealm().where(Leave.class).equalTo(Leave.FIELD_ID, id).findFirst();
     }
 
     @Override
@@ -62,13 +69,25 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
     }
 
     @Override
-    public void insertLeave(final Leave leaveToInsert) {
+    public void insertLeave(final Leave leaveToInsert, IDatabaseCallback callback) {
+        IRealmCallback realmCallback = convertCallback(callback);
         getServiceRealm().executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.copyToRealm(leaveToInsert);
             }
-        });
+        }, realmCallback, realmCallback);
+    }
+
+    @Override
+    public void insertLeaves(final List<Leave> leavesToInsert, IDatabaseCallback callback) {
+        IRealmCallback realmCallback = convertCallback(callback);
+        getServiceRealm().executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(leavesToInsert);
+            }
+        }, realmCallback, realmCallback);
     }
 
     @Override
@@ -79,6 +98,23 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
                 leaveToRemove.deleteFromRealm();
             }
         });
+    }
+
+    @Override
+    public void removeLeaves(final List<Leave> leavesToRemove) {
+        getServiceRealm().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for (Leave leave : leavesToRemove) {
+                    leave.deleteFromRealm();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void finish() {
+        this.close();
     }
 
 }

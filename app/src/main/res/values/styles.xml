@@ -15,7 +15,6 @@
 
     <style name="AppTheme.Toolbar" parent="AppTheme">
         <item name="android:textColorPrimary">@color/colorTextLight</item>
-        <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColorSecondary">@color/colorTextLight</item>
     </style>
 
@@ -26,6 +25,9 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="android:colorBackground">@color/colorPaperBackground</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+    </style>
 
 </resources>

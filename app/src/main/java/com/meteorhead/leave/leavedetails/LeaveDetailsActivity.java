@@ -2,6 +2,7 @@ package com.meteorhead.leave.leavedetails;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -23,10 +24,10 @@ public class LeaveDetailsActivity extends AppCompatActivity implements LeaveDeta
     }
 
     @Override
-    public void returnResult(Leave leaveObject) {
+    public void returnResult(@ResultCodes int resultCode, Leave leaveObject) {
         Intent result = new Intent();
         result.putExtra(Leave.PARAM_NAME, leaveObject);
-        setResult(0, result);
+        setResult(resultCode, result);
         finish();
     }
 
