@@ -17,6 +17,7 @@ import com.meteorhead.leave.databinding.ActivityMainBinding;
 import com.meteorhead.leave.leavedetails.LeaveDetailsActivity;
 import com.meteorhead.leave.leavelist.LeaveListFragment;
 import com.meteorhead.leave.models.Leave;
+import com.meteorhead.leave.utils.RealmExporter;
 
 
 public class MainActivity extends FragmentActivity
@@ -97,8 +98,14 @@ public class MainActivity extends FragmentActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+
+        switch (id) {
+            case R.id.nav_export_database:
+                RealmExporter.exportDatabase(this);
+                break;
+        }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

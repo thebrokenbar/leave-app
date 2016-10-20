@@ -9,6 +9,7 @@ import com.meteorhead.leave.database.realm.base.interfaces.RealmCallback;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.exceptions.RealmException;
 
 /**
  * Created by Grzegorz Wierzchanowski on 2016-09-16.
@@ -16,10 +17,16 @@ import io.realm.RealmObject;
  */
 
 public abstract class RealmService<E extends RealmObject> {
+    private static Realm mainThreadRealmInstance = Realm.getDefaultInstance();
+
     public static String FIELD_ID = "id";
 
     private Class<E> dataObjectClass;
     private final Realm serviceRealm;
+
+    public static Realm getMainThreadRealmInstance(){
+        return mainThreadRealmInstance;
+    }
 
     private RealmService() {
         this.serviceRealm = null;
@@ -57,7 +64,10 @@ public abstract class RealmService<E extends RealmObject> {
 
     public void close() {
         if (serviceRealm != null) {
-            serviceRealm.close();
+            if(serviceRealm != getMainThreadRealmInstance()) {
+                serviceRealm.close();
+            }
+
         }
     }
 }

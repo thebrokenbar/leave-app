@@ -12,22 +12,25 @@ import io.realm.annotations.Index;
 
 public class Holiday extends RealmObject {
 
-    public static String FIELD_COUNTRY = "country";
-    private RealmList<SupportedCountry> country;
-
-    public static String FIELD_HOLIDAY_DATE = "holidayDate";
+    private SupportedCountry country;
     @Index
     private Date holidayDate;
-
-    public static String FIELD_DAYS_NUMBER = "daysNumber";
     private int daysNumber;
 
+    public Holiday() {
+    }
 
-    public RealmList<SupportedCountry> getCountry() {
+    public Holiday(SupportedCountry country, Date holidayDate, int daysNumber) {
+        this.country = country;
+        this.holidayDate = holidayDate;
+        this.daysNumber = daysNumber;
+    }
+
+    public SupportedCountry getCountry() {
         return country;
     }
 
-    public void setCountry(RealmList<SupportedCountry> country) {
+    public void setCountry(SupportedCountry country) {
         this.country = country;
     }
 

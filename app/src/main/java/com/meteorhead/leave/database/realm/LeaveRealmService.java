@@ -1,11 +1,10 @@
 package com.meteorhead.leave.database.realm;
 
-import com.meteorhead.leave.database.dbabstract.base.DatabaseCallback;
 import com.meteorhead.leave.database.dbabstract.LeaveDbService;
+import com.meteorhead.leave.database.dbabstract.base.DatabaseCallback;
 import com.meteorhead.leave.database.dbabstract.base.DatabaseCallbackQuery;
 import com.meteorhead.leave.database.realm.base.RealmService;
 import com.meteorhead.leave.database.realm.base.interfaces.RealmCallback;
-import com.meteorhead.leave.database.realm.base.interfaces.RealmCallbackQuery;
 import com.meteorhead.leave.models.Leave;
 
 import java.sql.Date;
@@ -21,6 +20,10 @@ import io.realm.Sort;
  */
 
 public class LeaveRealmService extends RealmService<Leave> implements LeaveDbService<RealmResults<Leave>> {
+
+    public LeaveRealmService() {
+        super(Leave.class, getMainThreadRealmInstance());
+    }
 
     public LeaveRealmService(Realm realm) {
         super(Leave.class, realm);
@@ -41,16 +44,21 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
 
     @Override
     public void getAllLeavesAsync(final DatabaseCallbackQuery<RealmResults<Leave>> callback) {
+
         final RealmResults<Leave> result = getServiceRealm().where(Leave.class)
                 .findAllSortedAsync(Leave.FIELD_DATE_START, Sort.ASCENDING);
 
-        result.addChangeListener(new RealmChangeListener<RealmResults<Leave>>() {
-            @Override
-            public void onChange(RealmResults<Leave> element) {
-                callback.onSuccess(element);
-                result.removeChangeListeners();
-            }
-        });
+        if(result.isLoaded()) {
+            callback.onSuccess(result);
+        } else {
+            result.addChangeListener(new RealmChangeListener<RealmResults<Leave>>() {
+                @Override
+                public void onChange(RealmResults<Leave> element) {
+                    callback.onSuccess(element);
+                    result.removeChangeListeners();
+                }
+            });
+        }
     }
 
     @Override
@@ -131,7 +139,7 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
 
     @Override
     public void finish() {
-        this.close();
+        close();
     }
 
 }

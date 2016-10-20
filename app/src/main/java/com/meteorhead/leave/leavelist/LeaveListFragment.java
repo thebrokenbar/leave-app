@@ -22,9 +22,7 @@ import com.meteorhead.leave.mainactivity.MainActivityController;
 import com.meteorhead.leave.models.Leave;
 
 import java.util.ArrayList;
-import java.util.TimerTask;
 
-import io.realm.Realm;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -59,7 +57,7 @@ public class LeaveListFragment extends BaseFragment implements LeaveListFragment
         activityController = (MainActivityController) context;
 
         activityViewModel = activityController.getViewModel();
-        LeaveRealmService leaveRealmService = new LeaveRealmService(Realm.getDefaultInstance());
+        LeaveRealmService leaveRealmService = new LeaveRealmService();
         viewModel = new LeaveListViewModel(this, leaveRealmService);
     }
 

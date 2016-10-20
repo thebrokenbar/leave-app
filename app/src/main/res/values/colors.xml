@@ -11,4 +11,6 @@
     <color name="colorPaperBackground">#ffffff</color>
     <color name="colorPaperBackgroundChecked">#e5f0f7</color>
 
+    <color name="black_overlay">#66000000</color>
+
 </resources>

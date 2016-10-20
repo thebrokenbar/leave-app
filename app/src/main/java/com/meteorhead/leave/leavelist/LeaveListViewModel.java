@@ -121,10 +121,11 @@ public class LeaveListViewModel extends ViewModel {
     }
 
     public void addOrUpdateLeave(Leave leave) {
-        final LeaveDbService leaveDbService = new LeaveRealmService(Realm.getDefaultInstance());
+        final LeaveDbService leaveDbService = new LeaveRealmService();
         leaveDbService.addOrUpdate(leave, new RealmCallback() {
             @Override
             public void onSuccess() {
+                Logger.i("saved Leave in Database");
                 leaveDbService.finish();
             }
 
@@ -140,7 +141,7 @@ public class LeaveListViewModel extends ViewModel {
     public void removeLeaves(List<Leave> leaves) {
         recentlyRemovedItems.clear();
 
-        final LeaveDbService leaveDbService = new LeaveRealmService(Realm.getDefaultInstance());
+        final LeaveDbService leaveDbService = new LeaveRealmService();
         for (Leave item : leaves) {
             Leave itemCopy = new Leave();
             itemCopy.set(item);
@@ -148,26 +149,26 @@ public class LeaveListViewModel extends ViewModel {
             recentlyRemovedItems.add(itemCopy);
         }
         leaveDbService.removeLeaves(leaves);
-        leaveDbService.finish();
 
         showUndoSnackBar(leaves.size());
+        leaveDbService.finish();
     }
 
     private void restoreRecentlyRemovedLeaves() {
-        final LeaveDbService leaveDbService = new LeaveRealmService(Realm.getDefaultInstance());
+        final LeaveDbService leaveDbService = new LeaveRealmService();
         leaveDbService.insertLeaves(recentlyRemovedItems, new RealmCallback() {
             @Override
             public void onSuccess() {
-                leaveDbService.finish();
                 recentlyRemovedItems.clear();
+                leaveDbService.finish();
             }
 
             @Override
             public void onError(Throwable error) {
                 Logger.e(error, error.getMessage());
                 FirebaseCrash.report(error);
-                leaveDbService.finish();
                 recentlyRemovedItems.clear();
+                leaveDbService.finish();
             }
         });
     }

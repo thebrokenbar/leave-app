@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:643775717352:android:683de6018f86504b",
+        "mobilesdk_app_id": "1:643775717352:android:a5d1c973ec123b06",
         "android_client_info": {
           "package_name": "com.meteorhead.leave"
         }
       },
       "oauth_client": [
         {
-          "client_id": "643775717352-jts45daj3soif14tap4bvtlmdgj8u8fa.apps.googleusercontent.com",
+          "client_id": "643775717352-frqsjmaukcf7n6as2e5412d7n8rimffn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.meteorhead.leave",
-            "certificate_hash": "79708057EB8DCC3A5811025BCFD164CA86098C62"
+            "certificate_hash": "7F8E29502B2D6E8E6DEEFD84087C78A828501C20"
           }
         },
         {
@@ -37,13 +37,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "643775717352-tmbd19od3jo51p7c7961l6ro5sqf0jkd.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

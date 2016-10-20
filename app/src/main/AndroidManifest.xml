@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.meteorhead.leave">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.meteorhead.leave">
 
     <application
-        android:name="com.meteorhead.leave.application.Application"
+        android:name=".application.Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:screenOrientation="portrait"
-            android:name="com.meteorhead.leave.mainactivity.MainActivity"
+            android:parentActivityName=".splashscreen.SplashScreenActivity"
+            android:name=".mainactivity.MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".leavedetails.LeaveDetailsActivity"
+            android:parentActivityName=".mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".splashscreen.SplashScreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity
-            android:screenOrientation="portrait"
-            android:parentActivityName="com.meteorhead.leave.mainactivity.MainActivity"
-            android:name="com.meteorhead.leave.leavedetails.LeaveDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

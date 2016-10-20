@@ -10,4 +10,8 @@
     <string name="undo_action_text">UNDO</string>
     <string name="details_menu_remove_action_text">Remove</string>
 
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>

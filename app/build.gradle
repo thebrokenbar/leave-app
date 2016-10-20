@@ -31,31 +31,33 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:multidex:1.0.1'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'com.android.support:multidex:1.0.1'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'com.google.android.gms:play-services:9.6.1'
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
-    compile 'com.google.firebase:firebase-crash:9.6.0'
+    compile 'com.google.firebase:firebase-crash:9.6.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:cardview-v7:24.2.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     compile 'io.realm:android-adapters:1.3.0'
     compile 'com.facebook.stetho:stetho:1.4.1'
-    compile 'com.uphyca:stetho_realm:0.9.0'
+    compile 'com.uphyca:stetho_realm:2.0.0'
     compile 'com.orhanobut:logger:1.15'
     compile 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'
     compile 'com.hannesdorfmann.fragmentargs:bundler-parceler:3.0.2'
     compile 'com.andkulikov:transitionseverywhere:1.6.9'
+    compile 'net.danlew:android.joda:2.9.4.1'
+    compile 'com.google.firebase:firebase-database:9.6.1'
     testCompile 'junit:junit:4.12'
     apt 'com.hannesdorfmann.fragmentargs:processor:3.0.2'
-    compile 'net.danlew:android.joda:2.9.4.1'
+    apt 'dk.ilios:realmfieldnameshelper:1.1.0'
 }
 
 

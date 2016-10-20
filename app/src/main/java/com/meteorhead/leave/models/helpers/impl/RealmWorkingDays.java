@@ -1,7 +1,9 @@
 package com.meteorhead.leave.models.helpers.impl;
 
+import com.meteorhead.leave.database.dbabstract.HolidaysDbService;
+import com.meteorhead.leave.database.realm.HolidaysRealmService;
 import com.meteorhead.leave.models.Holiday;
-import com.meteorhead.leave.models.SupportedCountry;
+import com.meteorhead.leave.models.HolidayFields;
 import com.meteorhead.leave.models.helpers.WorkingDays;
 
 import org.joda.time.DateTimeConstants;
@@ -17,8 +19,6 @@ import javax.annotation.Nullable;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-import static com.meteorhead.leave.utils.RealmUtils.dot;
-
 /**
  * Created by wierzchanowskig on 25.09.2016.
  */
@@ -27,7 +27,8 @@ public class RealmWorkingDays implements WorkingDays {
     private LocalDate dateFrom;
     private LocalDate dateTo;
     private int daysCount = 0;
-    RealmResults<Holiday> holidayCache;
+    private HolidaysRealmService holidaysDbService;
+    private RealmResults<Holiday> holidayCache;
 
     public RealmWorkingDays(@Nullable Date from, @Nullable Date to) {
         if(from != null) {
@@ -36,6 +37,8 @@ public class RealmWorkingDays implements WorkingDays {
         if(to != null) {
             this.dateTo = new LocalDate(to.getTime());
         }
+
+        holidaysDbService = new HolidaysRealmService();
     }
 
     @Override
@@ -100,18 +103,14 @@ public class RealmWorkingDays implements WorkingDays {
 
     private List<Holiday> getHolidaysFromDb(Date from, Date to, String countryCode) {
         if(holidayCache == null) {
-            Realm realm = Realm.getDefaultInstance();
-            holidayCache = realm.where(Holiday.class)
-                    .equalTo(dot(Holiday.FIELD_COUNTRY, SupportedCountry.FIELD_COUNTRY_CODE), countryCode)
-                    .findAll();
-            realm.close();
+            holidayCache = holidaysDbService.getHolidays(countryCode);
         }
         return holidayCache.where()
-                .between(Holiday.FIELD_HOLIDAY_DATE, from, to)
+                .between(HolidayFields.HOLIDAY_DATE, from, to)
                 .findAll();
     }
 
     private String getDefaultCountryCode() {
-        return Locale.getDefault().getISO3Country();
+        return Locale.getDefault().getLanguage();
     }
 }

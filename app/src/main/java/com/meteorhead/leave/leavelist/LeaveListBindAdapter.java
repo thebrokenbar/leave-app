@@ -37,14 +37,14 @@ public class LeaveListBindAdapter {
         if(adapter == null) {
             adapter = new LeaveListRecyclerAdapter(recyclerView.getContext(), realmResults, leaveListViewModel);
             recyclerView.setAdapter(adapter);
+            if(rxOnItemClickListener != null) {
+                adapter.getItemClickObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(rxOnItemClickListener);
+            }
         }
         adapter.updateData(realmResults);
-        if(rxOnItemClickListener != null) {
-            adapter.getItemClickObservable()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.computation())
-                    .subscribe(rxOnItemClickListener);
-        }
         adapter.notifyDataSetChanged();
     }
 
