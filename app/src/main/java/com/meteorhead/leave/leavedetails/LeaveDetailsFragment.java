@@ -20,9 +20,16 @@ import com.meteorhead.leave.BaseFragment;
 import com.meteorhead.leave.R;
 import com.meteorhead.leave.databinding.LeaveDetailsFragmentContainerBinding;
 import com.meteorhead.leave.models.Leave;
+import com.meteorhead.leave.models.helpers.WorkingDays;
+import com.meteorhead.leave.models.helpers.impl.RealmWorkingDays;
+import com.meteorhead.leave.utils.DateConverter;
 import com.orhanobut.logger.Logger;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 
+import org.joda.time.LocalDate;
+
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.annotation.Nullable;
@@ -101,33 +108,51 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Date date;
-        switch (requestCode) {
-            case START_DATE_PICKER_REQUEST_CODE:
-                date = (Date) data.getSerializableExtra(DateSetFragment.DATE_PARAM);
-                viewModel.onStartDateResult(date);
-                break;
-            case END_DATE_PICKER_REQUEST_CODE:
-                date = (Date) data.getSerializableExtra(DateSetFragment.DATE_PARAM);
-                viewModel.onEndDateResult(date);
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
     public void showStartDatePickerDialog(@Nullable Date date) {
-        DateSetFragment.newInstance(this, date, START_DATE_PICKER_REQUEST_CODE).show(
-                getFragmentManager(), DateSetFragment.class.getSimpleName()
-        );
+        DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                viewModel.onStartDateResult(new LocalDate(year, monthOfYear, dayOfMonth).toDate());
+            }
+        };
+        showDatePicker(date, listener);
     }
 
     @Override
     public void showEndDatePickerDialog(@Nullable Date date) {
-        DateSetFragment.newInstance(this, date, END_DATE_PICKER_REQUEST_CODE).show(
-                getFragmentManager(), DateSetFragment.class.getSimpleName()
-        );
+        DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                viewModel.onEndDateResult(new LocalDate(year, monthOfYear, dayOfMonth).toDate());
+            }
+        };
+        showDatePicker(date, listener);
     }
+
+    private void showDatePicker(@Nullable Date date, DatePickerDialog.OnDateSetListener listener) {
+        Calendar calendar;
+        if(date != null) {
+            calendar = DateConverter.getAsCalendar(date);
+        } else {
+            calendar = Calendar.getInstance();
+        }
+
+        WorkingDays workingDaysHelper = new RealmWorkingDays(
+                LocalDate.now().toDate(),
+                new LocalDate(calendar.get(Calendar.YEAR) + 1, 12, 31).toDate()
+        );
+
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                listener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.dismissOnPause(true);
+        dpd.setMinDate(Calendar.getInstance());
+        dpd.setYearRange(calendar.get(Calendar.YEAR), calendar.get(Calendar.YEAR) + 1);
+        dpd.setDisabledDays(workingDaysHelper.getAllFreeDays());
+        dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
+    }
+
 }

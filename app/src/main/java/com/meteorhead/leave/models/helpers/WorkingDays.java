@@ -1,5 +1,6 @@
 package com.meteorhead.leave.models.helpers;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -13,4 +14,5 @@ public interface WorkingDays {
     int getSundays();
     int getSaturdays();
     void setStartDate(Date startDate);
+    Calendar[] getAllFreeDays();
 }

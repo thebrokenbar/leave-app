@@ -1,22 +1,24 @@
 package com.meteorhead.leave.models.helpers.impl;
 
-import com.meteorhead.leave.database.dbabstract.HolidaysDbService;
 import com.meteorhead.leave.database.realm.HolidaysRealmService;
 import com.meteorhead.leave.models.Holiday;
 import com.meteorhead.leave.models.HolidayFields;
 import com.meteorhead.leave.models.helpers.WorkingDays;
+import com.meteorhead.leave.utils.DateConverter;
+import com.orhanobut.logger.Logger;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -99,6 +101,36 @@ public class RealmWorkingDays implements WorkingDays {
     public void setStartDate(Date startDate) {
         holidayCache = null;
         this.dateFrom = new LocalDate(startDate.getTime());
+    }
+
+    @Override
+    public Calendar[] getAllFreeDays() {
+        String countryCode = getDefaultCountryCode();
+        List<Calendar> freeDaysList = new ArrayList<>();
+        List<Holiday> holidays = getHolidaysFromDb(dateFrom.toDate(), dateTo.toDate(), countryCode);
+        for (Holiday holiday : holidays) {
+            Calendar holidayDate = DateConverter.getAsCalendar(holiday.getHolidayDate());
+            freeDaysList.add(holidayDate);
+            LocalDate localHolidayDate = LocalDate.fromCalendarFields(holidayDate);
+            for (int i = 1; i < holiday.getDaysNumber(); i++) {
+                localHolidayDate = localHolidayDate.plusDays(1);
+                freeDaysList.add(DateConverter.getAsCalendar(localHolidayDate.toDate()));
+            }
+        }
+
+        LocalDate date = new LocalDate(dateFrom.toDate().getTime());
+        int dayOfTheWeek = date.getDayOfWeek();
+        int diffToSaturday = 6 - dayOfTheWeek;
+        date = date.plusDays(diffToSaturday);
+        while(date.toDate().getTime() < dateTo.toDate().getTime()) {
+            freeDaysList.add(DateConverter.getAsCalendar(date.toDate()));
+            date = date.plusDays(1);
+            freeDaysList.add(DateConverter.getAsCalendar(date.toDate()));
+            date = date.plusDays(6);
+            Logger.i("loop " + date.toString());
+        }
+
+        return freeDaysList.toArray(new Calendar[0]);
     }
 
     private List<Holiday> getHolidaysFromDb(Date from, Date to, String countryCode) {
