@@ -25,7 +25,7 @@ public class Leave extends RealmObject implements Parcelable {
     @Index
     private Date dateEnd;
     public static String FIELD_TITLE = "title";
-    private String title;
+    private String title = "";
     public static String FIELD_LEAVE_PURPOSE = "leavePurpose";
     private int leavePurpose;
 

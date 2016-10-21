@@ -3,7 +3,12 @@ package com.meteorhead.leave.leavedetails;
 import android.databinding.Bindable;
 import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.SeekBar;
+
+import com.android.databinding.library.baseAdapters.BR;
 
 import com.meteorhead.leave.ViewModel;
 import com.meteorhead.leave.models.Leave;
@@ -33,6 +38,7 @@ public class LeaveDetailsViewModel extends ViewModel {
     public Leave leaveObject;
     public final ObservableInt leaveDays;
     private WorkingDays workingDays;
+    private boolean appBarCollapsed;
 
     public LeaveDetailsViewModel(@NonNull LeaveDetailsFragmentController fragmentController,
                                  @NonNull LeaveDetailsActivityController activityController,
@@ -51,6 +57,17 @@ public class LeaveDetailsViewModel extends ViewModel {
 
     public void onConfirm() {
         activityController.returnResult(LeaveDetailsActivityController.RESULT_CODE_ADD,leaveObject);
+    }
+
+    @Bindable
+    public boolean isAppBarCollapsed() {
+        return appBarCollapsed;
+    }
+
+    @Bindable
+    public void setAppBarCollapsed(boolean appBarCollapsed) {
+        this.appBarCollapsed = appBarCollapsed;
+        notifyPropertyChanged(BR.appBarCollapsed);
     }
 
     @Bindable
@@ -146,5 +163,40 @@ public class LeaveDetailsViewModel extends ViewModel {
 
     public void removeLeave() {
         activityController.returnResult(LeaveDetailsActivityController.RESULT_CODE_REMOVE, leaveObject);
+    }
+
+    public TextWatcher getOnTitleTextChangeListener() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(!leaveObject.getTitle().equals(charSequence.toString())) {
+                    leaveObject.setTitle(charSequence.toString());
+                    notifyPropertyChanged(BR.leaveObject);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+    }
+
+    public AppBarLayout.OnOffsetChangedListener onBarCollapseListener() {
+        return new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) {
+                    setAppBarCollapsed(false);
+                } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
+                    setAppBarCollapsed(true);
+                }
+            }
+        };
     }
 }

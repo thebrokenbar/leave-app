@@ -12,7 +12,12 @@
     <android.support.v4.widget.NestedScrollView
         tools:context="com.meteorhead.leave.leavedetails.LeaveDetailsFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true">
+
+        <requestFocus
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

@@ -20,19 +20,42 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="192dp"
+            app:collapseListener="@{viewModel.onBarCollapseListener}"
             android:theme="@style/AppTheme.AppBarOverlay">
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_scrollFlags="enterAlways|exitUntilCollapsed|scroll|snap"
-                app:title="@{viewModel.leaveObject.title}"
-                app:titleEnabled="true">
-                <FrameLayout
+                app:titleEnabled="false">
+
+                <RelativeLayout
                     app:layout_collapseMode="parallax"
                     android:id="@+id/action_bar_toolbar_header"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent">
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:ems="10"
+                        android:id="@+id/etTitle"
+                        tools:layout_editor_absoluteY="0dp"
+                        tools:layout_editor_absoluteX="0dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:selectAllOnFocus="true"
+                        android:hint="Enter leave title..."
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:textSize="24sp"
+                        android:maxLines="1"
+                        app:layout_collapseMode="pin"
+                        android:background="@null"
+                        android:text="@={viewModel.leaveObject.title}"/>
+                </RelativeLayout>
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
@@ -40,6 +63,7 @@
                     android:theme="@style/AppTheme.Toolbar"
                     app:layout_collapseMode="pin"
                     android:fitsSystemWindows="true"
+                    app:title="@{viewModel.appBarCollapsed ? viewModel.leaveObject.title : null}"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
                 </android.support.v7.widget.Toolbar>
             </android.support.design.widget.CollapsingToolbarLayout>

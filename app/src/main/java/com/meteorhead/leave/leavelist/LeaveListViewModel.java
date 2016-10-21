@@ -1,7 +1,6 @@
 package com.meteorhead.leave.leavelist;
 
 import android.databinding.Bindable;
-import android.databinding.ObservableBoolean;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.google.firebase.crash.FirebaseCrash;
@@ -31,7 +30,6 @@ public class LeaveListViewModel extends ViewModel {
     private PublishSubject<Object> removeTaskPublishSubject = PublishSubject.create();
     private final List<Leave> recentlyRemovedItems = new ArrayList<>();
     private Collection<Leave> itemsList = null;
-
 
     public LeaveListViewModel(LeaveListFragmentController fragmentController, LeaveDbService leaveDbService) {
         this.fragmentController = fragmentController;
