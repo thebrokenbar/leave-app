@@ -9,8 +9,8 @@
     <color name="colorPrimaryText">#20242c</color>
     <color name="colorPrimaryTextDisabled">#2f3339</color>
     <color name="colorPaperBackground">#ffffff</color>
-    <color name="colorPaperBackgroundChecked">#e5f0f7</color>
-
+    <color name="colorPaperBackgroundChecked">#ffd8b8</color>
+    <color name="item_divider_color">#f1f1f1</color>
     <color name="black_overlay">#66000000</color>
 
 </resources>

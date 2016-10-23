@@ -18,11 +18,8 @@
         app:selectedBackgroundColor="@{@color/colorPaperBackgroundChecked}"
         app:selected="@{selector.selection}"
         android:foreground="?android:attr/selectableItemBackground"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="3dp"
-        android:layout_height="64dp">
+        android:layout_height="64dp"
+        app:cardElevation="0dp">
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">

@@ -112,7 +112,7 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
         DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                viewModel.onStartDateResult(new LocalDate(year, monthOfYear, dayOfMonth).toDate());
+                viewModel.onStartDateResult(new LocalDate(year, monthOfYear + 1, dayOfMonth).toDate());
             }
         };
         showDatePicker(date, listener);
@@ -123,7 +123,7 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
         DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                viewModel.onEndDateResult(new LocalDate(year, monthOfYear, dayOfMonth).toDate());
+                viewModel.onEndDateResult(new LocalDate(year, monthOfYear + 1, dayOfMonth).toDate());
             }
         };
         showDatePicker(date, listener);
