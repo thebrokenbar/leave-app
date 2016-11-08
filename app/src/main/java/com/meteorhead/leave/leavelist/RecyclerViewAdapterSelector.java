@@ -21,7 +21,7 @@ public class RecyclerViewAdapterSelector extends BaseObservable {
     }
 
     @Bindable
-    public void setSelecttion(Boolean selected) {
+    public void setSelection(Boolean selected) {
         this.selection = selected;
         notifyChange();
     }

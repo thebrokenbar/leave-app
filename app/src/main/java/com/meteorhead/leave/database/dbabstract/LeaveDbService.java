@@ -11,10 +11,10 @@ import com.meteorhead.leave.models.Leave;
 import java.sql.Date;
 import java.util.List;
 
-public interface LeaveDbService<T> {
+public interface LeaveDbService {
     List<Leave> findLeaveBetweenDates(final Date startDate, final Date endDate);
     List<Leave> getAllLeaves();
-    void getAllLeavesAsync(DatabaseCallbackQuery<T> callback);
+    List<Leave> getAllLeavesFuture();
     Leave getLeaveById(int id);
 
     void addOrUpdate(Leave leaveToAdd, DatabaseCallback callback);

@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,13 +32,11 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
 public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFragmentController{
 
     Leave leaveObject;
     LeaveDetailsViewModel viewModel;
+    private LeaveDetailsViewHandler viewHandler;
 
     @Override
     public void onCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
@@ -66,6 +62,10 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
         viewModel = new LeaveDetailsViewModel(this,
                 (LeaveDetailsActivityController) activity,
                 leaveObject);
+
+        viewHandler = new LeaveDetailsViewHandler(
+                (LeaveDetailsActivityController) activity);
+
     }
 
     @Override
@@ -74,12 +74,8 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
         LeaveDetailsFragmentContainerBinding binding = DataBindingUtil.inflate(inflater,
                 R.layout.leave_details_fragment_container, container, false);
         binding.setViewModel(viewModel);
+        binding.setViewHandler(viewHandler);
         return binding.getRoot();
-    }
-
-    @Override
-    protected void onBackStackResume() {
-
     }
 
     @Override
@@ -102,8 +98,10 @@ public class LeaveDetailsFragment extends BaseFragment implements LeaveDetailsFr
             case R.id.details_menu_remove:
                 viewModel.removeLeave();
                 break;
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

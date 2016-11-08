@@ -1,8 +1,19 @@
 package com.meteorhead.leave.models;
 
 
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
+
+import com.meteorhead.leave.R;
+
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -15,18 +26,21 @@ import io.realm.annotations.PrimaryKey;
 public class Leave extends RealmObject implements Parcelable {
     public static final String PARAM_NAME = "LEAVE_OBJECT";
 
-    public static String FIELD_ID = "id";
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({SPRING, SUMMER, AUTUMN, WINTER})
+    public @interface Season{}
+    public static final int SPRING = 0;
+    public static final int SUMMER = 1;
+    public static final int AUTUMN = 2;
+    public static final int WINTER = 3;
+
     @PrimaryKey
     private int id;
-    public static String FIELD_DATE_START = "dateStart";
     @Index
     private Date dateStart;
-    public static String FIELD_DATE_END = "dateEnd";
     @Index
     private Date dateEnd;
-    public static String FIELD_TITLE = "title";
     private String title = "";
-    public static String FIELD_LEAVE_PURPOSE = "leavePurpose";
     private int leavePurpose;
 
     public Leave() {
@@ -122,4 +136,10 @@ public class Leave extends RealmObject implements Parcelable {
             return new Leave[size];
         }
     };
+
+    public int getDaysDifference() {
+        return Days.daysBetween(
+                new LocalDate(dateStart.getTime()),
+                new LocalDate(dateEnd.getTime())).getDays();
+    }
 }

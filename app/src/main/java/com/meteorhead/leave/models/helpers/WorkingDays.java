@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public interface WorkingDays {
     Date getLastWorkingDay(int days);
+    Date getFirstWorkingDay(int days);
     int getWorkingDaysCount();
     int getHolidaysCount();
     int getAllDays();

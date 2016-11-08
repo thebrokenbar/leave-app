@@ -15,15 +15,13 @@ public class Holiday extends RealmObject {
     private SupportedCountry country;
     @Index
     private Date holidayDate;
-    private int daysNumber;
 
     public Holiday() {
     }
 
-    public Holiday(SupportedCountry country, Date holidayDate, int daysNumber) {
+    public Holiday(SupportedCountry country, Date holidayDate) {
         this.country = country;
         this.holidayDate = holidayDate;
-        this.daysNumber = daysNumber;
     }
 
     public SupportedCountry getCountry() {
@@ -40,13 +38,5 @@ public class Holiday extends RealmObject {
 
     public void setHolidayDate(Date holidayDate) {
         this.holidayDate = holidayDate;
-    }
-
-    public int getDaysNumber() {
-        return daysNumber;
-    }
-
-    public void setDaysNumber(int daysNumber) {
-        this.daysNumber = daysNumber;
     }
 }

@@ -33,7 +33,6 @@ public class Application extends MultiDexApplication {
         Realm.init(this);
         RealmConfiguration defaultRealmConfig = new RealmConfiguration.Builder()
                 .schemaVersion(0)
-                .name("leaveDb.realm")
                 .build();
         Realm.setDefaultConfiguration(defaultRealmConfig);
     }

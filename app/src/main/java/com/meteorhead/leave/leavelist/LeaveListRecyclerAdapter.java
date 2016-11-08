@@ -4,7 +4,6 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,10 +70,10 @@ public class LeaveListRecyclerAdapter extends RealmRecyclerViewAdapter<Leave, Le
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(leaveListViewModel.getSelectionMode()) {
-                        selector.setSelecttion(!selector.getSelection());
+                    if(leaveListViewModel.isSelectionMode.get()) {
+                        selector.setSelection(!selector.getSelection());
                         if(!isAnySelected()) {
-                            leaveListViewModel.setSelectionMode(false);
+                            leaveListViewModel.isSelectionMode.set(false);
                         }
                     } else {
                         onClickSubject.onNext(element);
@@ -85,8 +84,8 @@ public class LeaveListRecyclerAdapter extends RealmRecyclerViewAdapter<Leave, Le
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    leaveListViewModel.setSelectionMode(true);
-                    selector.setSelecttion(!selector.getSelection());
+                    leaveListViewModel.isSelectionMode.set(true);
+                    selector.setSelection(!selector.getSelection());
                     return true;
                 }
             });
@@ -101,11 +100,11 @@ public class LeaveListRecyclerAdapter extends RealmRecyclerViewAdapter<Leave, Le
         if (getData() != null) {
             for (int i = 0; i < getData().size(); i++) {
                 RecyclerViewAdapterSelector selector = selectionArray.get(i, new RecyclerViewAdapterSelector(false));
-                selector.setSelecttion(selected);
+                selector.setSelection(selected);
             }
         }
         if(!selected) {
-            leaveListViewModel.setSelectionMode(false);
+            leaveListViewModel.isSelectionMode.set(false);
         }
     }
 

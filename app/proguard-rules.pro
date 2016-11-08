@@ -19,3 +19,4 @@
 -keepattributes *Annotation*
 
 -keep class com.hannesdorfmann.fragmentargs.** { *; }
+-dontwarn java.lang.invoke.*

@@ -6,6 +6,7 @@ import com.meteorhead.leave.database.dbabstract.base.DatabaseCallbackQuery;
 import com.meteorhead.leave.database.realm.base.RealmService;
 import com.meteorhead.leave.database.realm.base.interfaces.RealmCallback;
 import com.meteorhead.leave.models.Leave;
+import com.meteorhead.leave.models.LeaveFields;
 
 import java.sql.Date;
 import java.util.List;
@@ -14,12 +15,14 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Lenovo on 2016-09-16.
  */
 
-public class LeaveRealmService extends RealmService<Leave> implements LeaveDbService<RealmResults<Leave>> {
+public class LeaveRealmService extends RealmService<Leave> implements LeaveDbService {
 
     public LeaveRealmService() {
         super(Leave.class, getMainThreadRealmInstance());
@@ -31,44 +34,31 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
 
     public RealmResults<Leave> findLeaveBetweenDates(final Date startDate, final Date endDate) {
         return getServiceRealm().where(Leave.class)
-                .between(Leave.FIELD_DATE_START, startDate, endDate)
-                .between(Leave.FIELD_DATE_END, startDate, endDate)
+                .between(LeaveFields.DATE_START, startDate, endDate)
+                .between(LeaveFields.DATE_END, startDate, endDate)
                 .findAll();
     }
 
     @Override
     public RealmResults<Leave> getAllLeaves() {
         return getServiceRealm().where(Leave.class)
-                .findAllSorted(Leave.FIELD_DATE_START, Sort.ASCENDING);
+                .findAllSorted(LeaveFields.DATE_START, Sort.ASCENDING);
     }
 
     @Override
-    public void getAllLeavesAsync(final DatabaseCallbackQuery<RealmResults<Leave>> callback) {
-
-        final RealmResults<Leave> result = getServiceRealm().where(Leave.class)
-                .findAllSortedAsync(Leave.FIELD_DATE_START, Sort.ASCENDING);
-
-        if(result.isLoaded()) {
-            callback.onSuccess(result);
-        } else {
-            result.addChangeListener(new RealmChangeListener<RealmResults<Leave>>() {
-                @Override
-                public void onChange(RealmResults<Leave> element) {
-                    callback.onSuccess(element);
-                    result.removeChangeListeners();
-                }
-            });
-        }
+    public RealmResults<Leave> getAllLeavesFuture() {
+        return getServiceRealm().where(Leave.class)
+                .findAllSortedAsync(LeaveFields.DATE_START, Sort.ASCENDING);
     }
 
     @Override
     public Leave getLeaveById(int id) {
-        return getServiceRealm().where(Leave.class).equalTo(Leave.FIELD_ID, id).findFirst();
+        return getServiceRealm().where(Leave.class).equalTo(LeaveFields.ID, id).findFirst();
     }
 
     @Override
     public void addOrUpdate(final Leave leaveToAdd, DatabaseCallback callback) throws IllegalArgumentException{
-        final Leave found = getServiceRealm().where(Leave.class).equalTo(Leave.FIELD_ID, leaveToAdd.getId()).findFirst();
+        final Leave found = getServiceRealm().where(Leave.class).equalTo(LeaveFields.ID, leaveToAdd.getId()).findFirst();
         if(found != null) {
             try {
                 getServiceRealm().executeTransaction(new Realm.Transaction() {

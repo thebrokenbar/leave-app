@@ -4,6 +4,9 @@
         <variable
             name="viewModel"
             type="com.meteorhead.leave.leavelist.LeaveListViewModel"/>
+        <variable
+            name="viewHandler"
+            type="com.meteorhead.leave.leavelist.LeaveListViewHandler"/>
         <import type="android.view.View" />
     </data>
     <android.support.design.widget.CoordinatorLayout
@@ -24,35 +27,40 @@
             android:visibility="@{viewModel.itemsList != null ? View.VISIBLE : View.GONE}"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
-            android:clipToPadding="false"
-            android:clipChildren="false"
             app:items="@{viewModel.itemsList}"
-            android:onClick="@{viewModel.onItemClickListener}"
+            android:onClick="@{viewHandler.onItemClickListener}"
             app:viewModel="@{viewModel}"
             android:layout_width="match_parent"
             android:id="@+id/rvLeaveList" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginRight="15dp"
-            android:onClick="@{() -> viewModel.onAddLeaveClick()}"
-            android:visibility="@{!viewModel.selectionMode &amp;&amp; viewModel.itemsList != null}"
-            app:fabSize="normal"
-            android:id="@+id/fabAddLeave"
-            app:srcCompat="@drawable/ic_add_white_24dp"
-            android:layout_gravity="bottom|right"/>
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginRight="15dp"
-            android:onClick="@{() -> viewModel.onRemoveLeaveClick()}"
-            android:visibility="@{viewModel.selectionMode}"
-            app:fabSize="normal"
-            android:id="@+id/fabRemoveLeave"
-            app:srcCompat="@drawable/ic_delete_white_24dp"
-            android:layout_gravity="bottom|right"/>
+        <com.github.clans.fab.FloatingActionMenu
+            app:layout_behavior="com.meteorhead.leave.views.behaviors.FloatingActionMenuBehavior"
+            android:visibility="@{!viewModel.isSelectionMode &amp;&amp; viewModel.itemsList != null}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|right"
+            app:menu_colorNormal="@color/colorAccent"
+            app:menu_icon="@drawable/ic_add_white_24dp"
+            app:closeOnTouchOutside="@{true}"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp">
+            <com.github.clans.fab.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/colorAccent"
+                android:onClick="@{(view) -> viewHandler.onAddLeaveClick(view)}"
+                app:fab_size="mini"
+                android:src="@drawable/ic_add_white_24dp"
+                app:fab_label="@string/add_new_leave_button"/>
+            <com.github.clans.fab.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/colorPrimary"
+                android:onClick="@{(view) -> viewHandler.onAddProposedLeaveClick(view)}"
+                app:fab_size="mini"
+                android:src="@drawable/ic_search"
+                app:fab_label="@string/find_leave_button"/>
+        </com.github.clans.fab.FloatingActionMenu>
+
     </android.support.design.widget.CoordinatorLayout>
 </layout>

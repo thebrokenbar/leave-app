@@ -13,5 +13,8 @@
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="add_new_leave_button">Add</string>
+    <string name="find_leave_button">Find best leave</string>
+    <string name="enter_leave_title">Enter leave title...</string>
 
 </resources>

@@ -3,10 +3,10 @@
     <data>
         <variable
             name="viewModel"
-            type="com.meteorhead.leave.leavedetails.LeaveDetailsViewModel"/>
+            type="com.meteorhead.leave.leavepropose.LeaveProposeViewModel"/>
         <variable
             name="viewHandler"
-            type="com.meteorhead.leave.leavedetails.LeaveDetailsViewHandler"/>
+            type="com.meteorhead.leave.leavepropose.LeaveProposeViewHandler"/>
     </data>
     <android.support.design.widget.CoordinatorLayout
         xmlns:bind="http://schemas.android.com/apk/res-auto"
@@ -29,7 +29,7 @@
                 android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_scrollFlags="enterAlways|exitUntilCollapsed|scroll|snap"
+                app:layout_scrollFlags="exitUntilCollapsed|scroll|snap"
                 app:titleEnabled="false">
 
                 <RelativeLayout
@@ -86,10 +86,11 @@
 
         <include
             bind:viewModel="@{viewModel}"
+            bind:viewHandler="@{viewHandler}"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            layout="@layout/fragment_leave_details"/>
+            layout="@layout/fragment_leave_propose"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

@@ -1,12 +1,14 @@
 package com.meteorhead.leave.leavelist;
 
 import android.databinding.BindingAdapter;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.meteorhead.leave.models.Leave;
+import com.orhanobut.logger.Logger;
 
 import java.util.Collection;
 
@@ -49,12 +51,17 @@ public class LeaveListBindAdapter {
     }
 
     @BindingAdapter("android:visibility")
-    public static void setVisibility(final FloatingActionButton fab, boolean visibility) {
+    public static void setVisibility(final FloatingActionMenu fabMenu, boolean visibility) {
         if(visibility) {
-            fab.show();
+            fabMenu.showMenuButton(true);
         } else {
-            fab.hide();
+            fabMenu.hideMenuButton(true);
         }
+    }
+
+    @BindingAdapter("closeOnTouchOutside")
+    public static void setClosedOnTouchOutside(final FloatingActionMenu floatingActionMenu, boolean close) {
+        floatingActionMenu.setClosedOnTouchOutside(close);
     }
 
     @BindingAdapter({"selected", "unselectedBackgroundColor", "selectedBackgroundColor"})

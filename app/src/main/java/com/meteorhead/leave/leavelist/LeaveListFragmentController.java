@@ -10,6 +10,9 @@ import rx.Observable;
 
 public interface LeaveListFragmentController {
     void addNewLeave();
+
+    void proposeNewLeave();
+
     void editLeave(Leave leaveObject);
     Observable<Boolean> showUndoSnackBar(int removedItemsCount);
 }

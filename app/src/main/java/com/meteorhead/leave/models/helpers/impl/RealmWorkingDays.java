@@ -56,6 +56,18 @@ public class RealmWorkingDays implements WorkingDays {
     }
 
     @Override
+    public Date getFirstWorkingDay(int days) {
+        dateTo = dateFrom.plusDays(0);
+        dateFrom = dateTo.minusDays(days-1);
+        int workingDays = getWorkingDaysCount();
+        while (workingDays != days) {
+            dateFrom = dateFrom.minusDays(1);
+            workingDays = getWorkingDaysCount();
+        }
+        return dateFrom.toDate();
+    }
+
+    @Override
     public int getWorkingDaysCount() {
         return getAllDays() - getHolidaysCount() - getSaturdays() - getSundays();
     }
@@ -64,11 +76,15 @@ public class RealmWorkingDays implements WorkingDays {
     public int getHolidaysCount() {
         String countryCode = getDefaultCountryCode();
         List<Holiday> holidaysList = getHolidaysFromDb(dateFrom.toDate(), dateTo.toDate(), countryCode);
-        int holidays = 0;
-        for (Holiday holiday : holidaysList) {
-            holidays += holiday.getDaysNumber();
+        int holidaysCount = 0;
+        for (Holiday holiday :
+                holidaysList) {
+            LocalDate localDate = new LocalDate(holiday.getHolidayDate().getTime());
+            if(localDate.getDayOfWeek() < 6){
+                holidaysCount++;
+            }
         }
-        return holidays;
+        return holidaysCount;
     }
 
     @Override
@@ -111,11 +127,6 @@ public class RealmWorkingDays implements WorkingDays {
         for (Holiday holiday : holidays) {
             Calendar holidayDate = DateConverter.getAsCalendar(holiday.getHolidayDate());
             freeDaysList.add(holidayDate);
-            LocalDate localHolidayDate = LocalDate.fromCalendarFields(holidayDate);
-            for (int i = 1; i < holiday.getDaysNumber(); i++) {
-                localHolidayDate = localHolidayDate.plusDays(1);
-                freeDaysList.add(DateConverter.getAsCalendar(localHolidayDate.toDate()));
-            }
         }
 
         LocalDate date = new LocalDate(dateFrom.toDate().getTime());

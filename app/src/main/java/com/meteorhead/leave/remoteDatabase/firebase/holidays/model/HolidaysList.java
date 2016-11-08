@@ -19,14 +19,12 @@ public class HolidaysList {
 
     public static class Holiday {
         public int dayOfYear;
-        public int daysDuration;
 
         public Holiday() {
         }
 
         public Holiday(int dayOfYear, int daysDuration) {
             this.dayOfYear = dayOfYear;
-            this.daysDuration = daysDuration;
         }
     }
 }

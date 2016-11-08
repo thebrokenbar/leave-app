@@ -7,8 +7,10 @@ import com.meteorhead.leave.models.HolidayFields;
 import com.meteorhead.leave.models.SupportedCountry;
 import com.meteorhead.leave.remoteDatabase.firebase.holidays.model.HolidaysList;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+
+import java.util.Date;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -29,16 +31,12 @@ public class HolidaysRealmService extends RealmService<Holiday> implements Holid
 
     @Override
     public void insertHolidays(final String countryCode, final HolidaysList holidaysList) {
-        getServiceRealm().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm inRealm) {
-                for (HolidaysList.Holiday holiday :
-                        holidaysList.freeDays) {
-                    inRealm.insertOrUpdate(new Holiday(
-                            new SupportedCountry(countryCode),
-                            new LocalDate().withDayOfYear(holiday.dayOfYear).toDate(),
-                            holiday.daysDuration));
-                }
+        getServiceRealm().executeTransaction(inRealm -> {
+            for (HolidaysList.Holiday holiday :
+                    holidaysList.freeDays) {
+                inRealm.insertOrUpdate(new Holiday(
+                        new SupportedCountry(countryCode),
+                        new LocalDate().withDayOfYear(holiday.dayOfYear).toDate()));
             }
         });
     }
@@ -47,6 +45,14 @@ public class HolidaysRealmService extends RealmService<Holiday> implements Holid
     public RealmResults<Holiday> getHolidays(final String countryCode) {
         return getServiceRealm().where(Holiday.class)
                 .equalTo(HolidayFields.COUNTRY.COUNTRY_CODE, countryCode)
+                .findAll();
+    }
+
+    @Override
+    public List<Holiday> getHolidaysBetweenDates(String countryCode, Date from, Date to) {
+        return getServiceRealm().where(Holiday.class)
+                .equalTo(HolidayFields.COUNTRY.COUNTRY_CODE, countryCode)
+                .between(HolidayFields.HOLIDAY_DATE, from, to)
                 .findAll();
     }
 

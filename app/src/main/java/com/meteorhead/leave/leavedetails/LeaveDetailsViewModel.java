@@ -20,6 +20,8 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 
+import static com.meteorhead.leave.leavelist.LeaveListResult.RESULT_CODE_REMOVE;
+
 /**
  * Created by wierzchanowskig on 18.09.2016.
  */
@@ -53,10 +55,6 @@ public class LeaveDetailsViewModel extends ViewModel {
             workingDays = new RealmWorkingDays(this.leaveObject.getDateStart(), this.leaveObject.getDateEnd());
         }
         this.leaveDays = new ObservableInt(DEFAULT_NUMBER_OF_DAYS);
-    }
-
-    public void onConfirm() {
-        activityController.returnResult(LeaveDetailsActivityController.RESULT_CODE_ADD,leaveObject);
     }
 
     @Bindable
@@ -162,7 +160,7 @@ public class LeaveDetailsViewModel extends ViewModel {
     }
 
     public void removeLeave() {
-        activityController.returnResult(LeaveDetailsActivityController.RESULT_CODE_REMOVE, leaveObject);
+        activityController.returnResult(RESULT_CODE_REMOVE, leaveObject);
     }
 
     public TextWatcher getOnTitleTextChangeListener() {

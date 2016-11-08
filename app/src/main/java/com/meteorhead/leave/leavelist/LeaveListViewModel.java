@@ -1,12 +1,12 @@
 package com.meteorhead.leave.leavelist;
 
 import android.databinding.Bindable;
+import android.databinding.ObservableBoolean;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.google.firebase.crash.FirebaseCrash;
 import com.meteorhead.leave.ViewModel;
 import com.meteorhead.leave.database.dbabstract.LeaveDbService;
-import com.meteorhead.leave.database.dbabstract.base.DatabaseCallbackQuery;
 import com.meteorhead.leave.database.realm.LeaveRealmService;
 import com.meteorhead.leave.database.realm.base.interfaces.RealmCallback;
 import com.meteorhead.leave.models.Leave;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.functions.Action1;
@@ -24,31 +24,27 @@ import rx.subjects.PublishSubject;
 
 public class LeaveListViewModel extends ViewModel {
     private LeaveListFragmentController fragmentController;
-    private LeaveDbService leaveDbService;
-    private boolean selectionMode = false;
+    private LeaveRealmService leaveDbService;
 
     private PublishSubject<Object> removeTaskPublishSubject = PublishSubject.create();
     private final List<Leave> recentlyRemovedItems = new ArrayList<>();
-    private Collection<Leave> itemsList = null;
+    private RealmResults<Leave> itemsList = null;
+    public ObservableBoolean isSelectionMode = new ObservableBoolean(false);
 
-    public LeaveListViewModel(LeaveListFragmentController fragmentController, LeaveDbService leaveDbService) {
+    private RealmChangeListener<RealmResults<Leave>> itemsListChangeListener = new RealmChangeListener<RealmResults<Leave>>() {
+        @Override
+        public void onChange(RealmResults<Leave> element) {
+            notifyPropertyChanged(BR.itemsList);
+        }
+    };
+
+    LeaveListViewModel(LeaveListFragmentController fragmentController, LeaveRealmService leaveDbService) {
         this.fragmentController = fragmentController;
         this.leaveDbService = leaveDbService;
     }
 
-    public void onStart() {
-        leaveDbService.getAllLeavesAsync(new DatabaseCallbackQuery<RealmResults<Leave>>() {
-            @Override
-            public void onSuccess(RealmResults<Leave> result) {
-                setItemsList(result);
-            }
-
-            @Override
-            public void onError(Throwable error) {
-                Logger.e(error, error.getMessage());
-                FirebaseCrash.report(error);
-            }
-        });
+    void onStart() {
+        setItemsList(leaveDbService.getAllLeavesFuture());
     }
 
     @Bindable
@@ -56,58 +52,28 @@ public class LeaveListViewModel extends ViewModel {
         return itemsList;
     }
 
-    @Bindable
-    public void setItemsList(Collection<Leave> items) {
+    private void setItemsList(RealmResults<Leave> items) {
+        if(this.itemsList != null) {
+            this.itemsList.removeChangeListeners();
+        }
         this.itemsList = items;
+        this.itemsList.addChangeListener(itemsListChangeListener);
         notifyPropertyChanged(BR.itemsList);
     }
 
-    public void onAddLeaveClick() {
-        openLeaveDetailsScreenAdd();
-    }
-
-    public void onRemoveLeaveClick() {
+    void onRemoveLeaveClick() {
         removeTaskPublishSubject.onNext(0);
     }
 
-    public Observable<Object> getRemoveTaskObservable() {
+    Observable<Object> getRemoveTaskObservable() {
         return removeTaskPublishSubject.asObservable();
     }
 
-    @Bindable
-    public Action1<Leave> getOnItemClickListener() {
-        return new Action1<Leave>() {
-            @Override
-            public void call(Leave leave) {
-                openLeaveDetailsScreenEdit(leave);
-            }
-        };
-    }
-
-    private void openLeaveDetailsScreenAdd() {
-        fragmentController.addNewLeave();
-    }
-
-    private void openLeaveDetailsScreenEdit(Leave leaveObject) {
-        fragmentController.editLeave(leaveObject);
-    }
-
-    @Bindable
-    public boolean getSelectionMode() {
-        return selectionMode;
-    }
-
-    @Bindable
-    public void setSelectionMode(boolean selectionMode) {
-        this.selectionMode = selectionMode;
-        notifyPropertyChanged(BR.selectionMode);
-    }
-
-    public LeaveDbService getLeaveDbService() {
+    LeaveDbService getLeaveDbService() {
         return leaveDbService;
     }
 
-    public void showUndoSnackBar(int removedItemsCount) {
+    private void showUndoSnackBar(int removedItemsCount) {
         fragmentController.showUndoSnackBar(removedItemsCount).subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean actionClicked) {
@@ -118,7 +84,19 @@ public class LeaveListViewModel extends ViewModel {
         });
     }
 
-    public void addOrUpdateLeave(Leave leave) {
+    void openLeaveDetailsScreenAdd() {
+        fragmentController.addNewLeave();
+    }
+
+    void openLeaveDetailsScreenEdit(Leave leaveObject) {
+        fragmentController.editLeave(leaveObject);
+    }
+
+    void openLeaveProposeScreenAdd() {
+        fragmentController.proposeNewLeave();
+    }
+
+    void addOrUpdateLeave(Leave leave) {
         final LeaveDbService leaveDbService = new LeaveRealmService();
         leaveDbService.addOrUpdate(leave, new RealmCallback() {
             @Override
@@ -136,7 +114,7 @@ public class LeaveListViewModel extends ViewModel {
         });
     }
 
-    public void removeLeaves(List<Leave> leaves) {
+    void removeLeaves(List<Leave> leaves) {
         recentlyRemovedItems.clear();
 
         final LeaveDbService leaveDbService = new LeaveRealmService();

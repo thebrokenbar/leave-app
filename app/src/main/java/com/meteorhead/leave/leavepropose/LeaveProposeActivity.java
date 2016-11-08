@@ -1,23 +1,20 @@
-package com.meteorhead.leave.leavedetails;
+package com.meteorhead.leave.leavepropose;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.IntDef;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.meteorhead.leave.R;
 import com.meteorhead.leave.leavelist.LeaveListResult;
-import com.meteorhead.leave.mainactivity.ActivityViewModel;
 import com.meteorhead.leave.models.Leave;
 
-
-public class LeaveDetailsActivity extends AppCompatActivity implements LeaveDetailsActivityController {
+public class LeaveProposeActivity extends AppCompatActivity implements LeaveProposeActivityController {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_leave_details);
+        setContentView(R.layout.activity_leave_propose);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
