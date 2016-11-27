@@ -19,8 +19,10 @@ public interface LeaveDbService {
 
     void addOrUpdate(Leave leaveToAdd, DatabaseCallback callback);
     void insertLeave(Leave leaveToInsert, DatabaseCallback callback);
-    void insertLeaves(List<Leave> leavesToInsert, DatabaseCallback callback);
+    void insertLeaves(List<Leave> leavesToInsert);
     void removeLeave(Leave leaveToRemove);
     void removeLeaves(List<Leave> leaveToRemove);
     void finish();
+    Leave copy(Leave leave);
+    List<Leave> copy(List<Leave> leaves);
 }

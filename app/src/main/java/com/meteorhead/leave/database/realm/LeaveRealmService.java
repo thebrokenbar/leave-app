@@ -58,71 +58,40 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
 
     @Override
     public void addOrUpdate(final Leave leaveToAdd, DatabaseCallback callback) throws IllegalArgumentException{
-        final Leave found = getServiceRealm().where(Leave.class).equalTo(LeaveFields.ID, leaveToAdd.getId()).findFirst();
-        if(found != null) {
-            try {
-                getServiceRealm().executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        found.set(leaveToAdd);
-                    }
-                });
-                callback.onSuccess();
-            } catch (Exception e) {
-                callback.onError(e);
-            }
-        } else {
-            RealmCallback realmCallback = convertCallback(callback);
-            getServiceRealm().executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    leaveToAdd.setId((Integer) getNextPrimaryKey(realm));
-                    realm.copyToRealm(leaveToAdd);
-                }
-            }, realmCallback, realmCallback);
+        RealmCallback realmCallback = convertCallback(callback);
+
+        int id = leaveToAdd.getId();
+        if(leaveToAdd.getId() == -1) {
+            id = (int) getNextPrimaryKey(getServiceRealm());
         }
+        final int primaryKey = id;
+        getServiceRealm().executeTransactionAsync(realm -> {
+            leaveToAdd.setId(primaryKey);
+            realm.insertOrUpdate(leaveToAdd);
+        }, realmCallback, realmCallback);
     }
 
     @Override
     public void insertLeave(final Leave leaveToInsert, DatabaseCallback callback) {
         RealmCallback realmCallback = convertCallback(callback);
-        getServiceRealm().executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealm(leaveToInsert);
-            }
-        }, realmCallback, realmCallback);
+        getServiceRealm().executeTransactionAsync(realm -> realm.copyToRealm(leaveToInsert), realmCallback, realmCallback);
     }
 
     @Override
-    public void insertLeaves(final List<Leave> leavesToInsert, DatabaseCallback callback) {
-        RealmCallback realmCallback = convertCallback(callback);
-        getServiceRealm().executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealm(leavesToInsert);
-            }
-        }, realmCallback, realmCallback);
+    public void insertLeaves(final List<Leave> leavesToInsert) {
+        getServiceRealm().executeTransaction(realm -> realm.insert(leavesToInsert));
     }
 
     @Override
     public void removeLeave(final Leave leaveToRemove) {
-        getServiceRealm().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                leaveToRemove.deleteFromRealm();
-            }
-        });
+        getServiceRealm().executeTransaction(realm -> leaveToRemove.deleteFromRealm());
     }
 
     @Override
     public void removeLeaves(final List<Leave> leavesToRemove) {
-        getServiceRealm().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                for (Leave leave : leavesToRemove) {
-                    leave.deleteFromRealm();
-                }
+        getServiceRealm().executeTransaction(realm -> {
+            for (Leave leave : leavesToRemove) {
+                leave.deleteFromRealm();
             }
         });
     }
@@ -131,5 +100,16 @@ public class LeaveRealmService extends RealmService<Leave> implements LeaveDbSer
     public void finish() {
         close();
     }
+
+    @Override
+    public Leave copy(Leave leave) {
+        return getServiceRealm().copyFromRealm(leave);
+    }
+
+    @Override
+    public List<Leave> copy(List<Leave> leaves) {
+        return getServiceRealm().copyFromRealm(leaves);
+    }
+
 
 }

@@ -1,6 +1,5 @@
 package com.meteorhead.leave.leavelist;
 
-import android.databinding.Bindable;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -39,12 +38,6 @@ public class LeaveListViewHandler {
     }
 
     public Action1<Leave> getOnItemClickListener() {
-        return new Action1<Leave>() {
-            @Override
-            public void call(Leave leave) {
-                viewModel.openLeaveDetailsScreenEdit(leave);
-            }
-        };
+        return leave -> viewModel.openLeaveDetailsScreenEdit(leave);
     }
-
 }

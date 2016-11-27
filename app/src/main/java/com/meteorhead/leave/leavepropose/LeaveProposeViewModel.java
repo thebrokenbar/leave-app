@@ -1,12 +1,11 @@
 package com.meteorhead.leave.leavepropose;
 
 import android.databinding.Bindable;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 
 import com.android.databinding.library.baseAdapters.BR;
-import com.meteorhead.leave.ViewModel;
+import com.meteorhead.leave.base.ViewModel;
 import com.meteorhead.leave.database.dbabstract.HolidaysDbService;
 import com.meteorhead.leave.database.realm.HolidaysRealmService;
 import com.meteorhead.leave.models.Holiday;
@@ -17,14 +16,9 @@ import com.meteorhead.leave.models.helpers.impl.RealmWorkingDays;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,10 +44,6 @@ public class LeaveProposeViewModel extends ViewModel {
 
     private int selectedYear = 2016;
     private List<Leave> proposedLeave;
-
-    public LeaveProposeViewModel() {
-        this.leaveObject = new Leave();
-    }
 
     public AppBarLayout.OnOffsetChangedListener onBarCollapseListener() {
         return (appBarLayout, verticalOffset) -> {
@@ -198,21 +188,21 @@ public class LeaveProposeViewModel extends ViewModel {
         WorkingDays workingDays = new RealmWorkingDays(null, null);
         List<Leave> proposedLeave = new ArrayList<>();
         for (Holiday holiday : holidays) {
-            LocalDate dayFrom = new LocalDate(holiday.getHolidayDate().getTime());
-            if(dayFrom.getDayOfWeek() > 6) {
-                dayFrom = dayFrom.plusDays(6 - dayFrom.getDayOfWeek());
+            LocalDate dayTo = new LocalDate(holiday.getHolidayDate().getTime());
+            if(dayTo.getDayOfWeek() > 6) {
+                dayTo = dayTo.plusDays(6 - dayTo.getDayOfWeek());
             }
-            workingDays.setStartDate(dayFrom.toDate());
-            proposedLeave.add(new Leave(dayFrom.toDate(),
+            workingDays.setStartDate(dayTo.toDate());
+            proposedLeave.add(new Leave(dayTo.toDate(),
                     workingDays.getLastWorkingDay(days),
-                    null, 0));
-            if(dayFrom.getDayOfWeek() > 5) {
-                dayFrom = dayFrom.plusDays(8 - dayFrom.getDayOfWeek());
+                    null, 0, days));
+            if(dayTo.getDayOfWeek() > 5) {
+                dayTo = dayTo.plusDays(8 - dayTo.getDayOfWeek());
             }
-            workingDays.setStartDate(dayFrom.toDate());
+            workingDays.setStartDate(dayTo.toDate());
             proposedLeave.add(new Leave(workingDays.getFirstWorkingDay(days),
-                    dayFrom.toDate(),
-                    null, 0));
+                    dayTo.toDate(),
+                    null, 0, days));
         }
 
         return proposedLeave;

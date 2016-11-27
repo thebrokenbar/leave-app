@@ -41,14 +41,11 @@ public class LeaveListRecyclerAdapter extends RealmRecyclerViewAdapter<Leave, Le
     }
 
     private void subscribeOnRemoveTask() {
-        leaveListViewModel.getRemoveTaskObservable().subscribe(new Action1<Object>() {
-            @Override
-            public void call(Object o) {
-                List<Leave> selectedItems = getSelectedItems();
-                if(selectedItems != null) {
-                    leaveListViewModel.removeLeaves(selectedItems);
-                    setSelectionToAll(false);
-                }
+        leaveListViewModel.getRemoveTaskObservable().subscribe(o -> {
+            List<Leave> selectedItems = getSelectedItems();
+            if(selectedItems != null) {
+                leaveListViewModel.removeLeaves(selectedItems);
+                setSelectionToAll(false);
             }
         });
     }
@@ -67,27 +64,21 @@ public class LeaveListRecyclerAdapter extends RealmRecyclerViewAdapter<Leave, Le
             final int pos = holder.getAdapterPosition();
             final RecyclerViewAdapterSelector selector = selectionArray.get(pos, new RecyclerViewAdapterSelector(false));
             selectionArray.put(pos, selector);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(leaveListViewModel.isSelectionMode.get()) {
-                        selector.setSelection(!selector.getSelection());
-                        if(!isAnySelected()) {
-                            leaveListViewModel.isSelectionMode.set(false);
-                        }
-                    } else {
-                        onClickSubject.onNext(element);
+            holder.itemView.setOnClickListener(view -> {
+                if(leaveListViewModel.isSelectionMode.get()) {
+                    selector.setSelection(!selector.getSelection());
+                    if(!isAnySelected()) {
+                        leaveListViewModel.isSelectionMode.set(false);
                     }
+                } else {
+                    onClickSubject.onNext(element);
                 }
             });
 
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    leaveListViewModel.isSelectionMode.set(true);
-                    selector.setSelection(!selector.getSelection());
-                    return true;
-                }
+            holder.itemView.setOnLongClickListener(view -> {
+                leaveListViewModel.isSelectionMode.set(true);
+                selector.setSelection(!selector.getSelection());
+                return true;
             });
             LeaveListItemBinding itemBinding = holder.getItemBinding();
             itemBinding.setLeave(getData().get(position));

@@ -138,7 +138,6 @@ public class RealmWorkingDays implements WorkingDays {
             date = date.plusDays(1);
             freeDaysList.add(DateConverter.getAsCalendar(date.toDate()));
             date = date.plusDays(6);
-            Logger.i("loop " + date.toString());
         }
 
         return freeDaysList.toArray(new Calendar[0]);

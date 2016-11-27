@@ -10,7 +10,8 @@ import android.widget.SeekBar;
 
 import com.android.databinding.library.baseAdapters.BR;
 
-import com.meteorhead.leave.ViewModel;
+import com.meteorhead.leave.base.ViewModel;
+import com.meteorhead.leave.mainactivity.ActivityViewModel;
 import com.meteorhead.leave.models.Leave;
 import com.meteorhead.leave.models.helpers.WorkingDays;
 import com.meteorhead.leave.models.helpers.impl.RealmWorkingDays;
@@ -18,9 +19,8 @@ import com.meteorhead.leave.models.helpers.impl.RealmWorkingDays;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.annotation.Nullable;
-
-import static com.meteorhead.leave.leavelist.LeaveListResult.RESULT_CODE_REMOVE;
+import static com.meteorhead.leave.leavedetails.conductor.LeaveDetailsView.RESULT_CODE_ADD_OR_EDIT_LEAVE;
+import static com.meteorhead.leave.leavedetails.conductor.LeaveDetailsView.RESULT_CODE_REMOVE_LEAVE;
 
 /**
  * Created by wierzchanowskig on 18.09.2016.
@@ -32,29 +32,25 @@ public class LeaveDetailsViewModel extends ViewModel {
     private static final int DEFAULT_NUMBER_OF_DAYS = 5;
 
     @NonNull
-    private LeaveDetailsFragmentController fragmentController;
-    @NonNull
-    private final LeaveDetailsActivityController activityController;
+    private LeaveDetailsViewController viewController;
 
     @NonNull
     public Leave leaveObject;
     public final ObservableInt leaveDays;
+    @NonNull
+    private final ActivityViewModel activityViewModel;
     private WorkingDays workingDays;
     private boolean appBarCollapsed;
 
-    public LeaveDetailsViewModel(@NonNull LeaveDetailsFragmentController fragmentController,
-                                 @NonNull LeaveDetailsActivityController activityController,
-                                 @Nullable Leave leaveObject) {
-        this.fragmentController = fragmentController;
-        this.activityController = activityController;
-        if(leaveObject == null) {
-            this.leaveObject = new Leave();
-            workingDays = new RealmWorkingDays(null, null);
-        } else {
-            this.leaveObject = leaveObject;
-            workingDays = new RealmWorkingDays(this.leaveObject.getDateStart(), this.leaveObject.getDateEnd());
-        }
-        this.leaveDays = new ObservableInt(DEFAULT_NUMBER_OF_DAYS);
+    public LeaveDetailsViewModel(@NonNull LeaveDetailsViewController viewController, @NonNull ActivityViewModel activityViewModel,
+                                 @NonNull Leave leaveObject, @NonNull WorkingDays workingDays,
+                                 @NonNull ObservableInt leaveDays) {
+        this.viewController = viewController;
+        this.activityViewModel = activityViewModel;
+        this.workingDays = workingDays;
+        this.leaveDays = leaveDays;
+        this.leaveObject = leaveObject;
+        this.leaveDays.set(DEFAULT_NUMBER_OF_DAYS);
     }
 
     @Bindable
@@ -63,9 +59,13 @@ public class LeaveDetailsViewModel extends ViewModel {
     }
 
     @Bindable
-    public void setAppBarCollapsed(boolean appBarCollapsed) {
-        this.appBarCollapsed = appBarCollapsed;
+    public void setAppBarCollapsed(boolean isAppBarCollapsed) {
+        this.appBarCollapsed = isAppBarCollapsed;
         notifyPropertyChanged(BR.appBarCollapsed);
+        activityViewModel.titleVisibility.set(isAppBarCollapsed);
+        if(isAppBarCollapsed) {
+            activityViewModel.title.set(leaveObject.getTitle());
+        }
     }
 
     @Bindable
@@ -79,6 +79,7 @@ public class LeaveDetailsViewModel extends ViewModel {
                 }
                 if(b) {
                     setEndDate(workingDays.getLastWorkingDay(i));
+                    leaveObject.setDuration(workingDays.getWorkingDaysCount());
                     notifyChange();
                 }
             }
@@ -111,12 +112,12 @@ public class LeaveDetailsViewModel extends ViewModel {
         return SEEK_BAR_MAXIMUM_VALUE;
     }
 
-    public void onStartDateClick() {
-        fragmentController.showStartDatePickerDialog(leaveObject.getDateStart());
+    public void showStartDatePickerDialog() {
+        viewController.showStartDatePickerDialog(leaveObject.getDateStart());
     }
 
-    public void onEndDateClick() {
-        fragmentController.showEndDatePickerDialog(leaveObject.getDateEnd());
+    public void showEndDatePickerDialog() {
+        viewController.showEndDatePickerDialog(leaveObject.getDateEnd());
     }
 
     public String formatDate(Date date) {
@@ -135,11 +136,11 @@ public class LeaveDetailsViewModel extends ViewModel {
         return workingDays.getWorkingDaysCount();
     }
 
-    void onStartDateResult(Date date) {
+    public void onStartDateResult(Date date) {
         setStartDate(date);
     }
 
-    void onEndDateResult(Date date) {
+    public void onEndDateResult(Date date) {
         setEndDate(date);
     }
 
@@ -150,51 +151,33 @@ public class LeaveDetailsViewModel extends ViewModel {
         if(leaveObject.getDateEnd() == null) {
             setEndDate(workingDays.getLastWorkingDay(DEFAULT_NUMBER_OF_DAYS));
         }
+        leaveObject.setDuration(workingDays.getWorkingDaysCount());
         notifyChange();
     }
 
     @Bindable
     public void setEndDate(Date date) {
         leaveObject.setDateEnd(date);
+        leaveObject.setDuration(workingDays.getWorkingDaysCount());
         notifyChange();
     }
 
-    public void removeLeave() {
-        activityController.returnResult(RESULT_CODE_REMOVE, leaveObject);
-    }
-
-    public TextWatcher getOnTitleTextChangeListener() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(!leaveObject.getTitle().equals(charSequence.toString())) {
-                    leaveObject.setTitle(charSequence.toString());
-                    notifyPropertyChanged(BR.leaveObject);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        };
-    }
-
     public AppBarLayout.OnOffsetChangedListener onBarCollapseListener() {
-        return new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0) {
-                    setAppBarCollapsed(false);
-                } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
-                    setAppBarCollapsed(true);
-                }
+        return (appBarLayout, verticalOffset) -> {
+            if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange() * 0.25f) {
+                setAppBarCollapsed(true);
+            }
+            else if(isAppBarCollapsed()){
+                setAppBarCollapsed(false);
             }
         };
+    }
+
+    public void removeLeave() {
+        viewController.returnResult(RESULT_CODE_REMOVE_LEAVE, this.leaveObject);
+    }
+
+    public void returnLeave(Leave leaveObject) {
+        viewController.returnResult(RESULT_CODE_ADD_OR_EDIT_LEAVE, leaveObject);
     }
 }

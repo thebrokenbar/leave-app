@@ -9,13 +9,21 @@ import com.meteorhead.leave.models.Leave;
 
 public class LeaveDetailsViewHandler {
 
-    private LeaveDetailsActivityController activityController;
+    private LeaveDetailsViewModel viewModel;
 
-    public LeaveDetailsViewHandler(LeaveDetailsActivityController activityController) {
-        this.activityController = activityController;
+    public LeaveDetailsViewHandler(LeaveDetailsViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     public void onConfirm(Leave leaveObject) {
-        activityController.returnResult(LeaveListResult.RESULT_CODE_ADD, leaveObject);
+        viewModel.returnLeave(leaveObject);
+    }
+
+    public void onStartDateClick() {
+        viewModel.showStartDatePickerDialog();
+    }
+
+    public void onEndDateClick() {
+        viewModel.showEndDatePickerDialog();
     }
 }

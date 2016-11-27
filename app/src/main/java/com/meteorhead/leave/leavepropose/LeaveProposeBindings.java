@@ -33,7 +33,7 @@ public class LeaveProposeBindings {
                         android.R.layout.simple_list_item_1, listLayout, false);
                 Resources res = listLayout.getContext().getResources();
                 String days = res.getQuantityString(R.plurals.numberOfDays,
-                        entry.getDaysDifference(), entry.getDaysDifference());
+                        entry.getDuration(), entry.getDuration());
                 String text = SimpleDateFormat.getDateInstance().format(entry.getDateStart()) + " - " +
                         SimpleDateFormat.getDateInstance().format(entry.getDateEnd()) + " (" + days + ")";
                 textView.setText(text);

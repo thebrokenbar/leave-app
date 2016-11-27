@@ -1,4 +1,4 @@
-package com.meteorhead.leave;
+package com.meteorhead.leave.base;
 
 import android.databinding.BaseObservable;
 

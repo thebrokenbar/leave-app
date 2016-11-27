@@ -1,19 +1,12 @@
 package com.meteorhead.leave.models;
 
 
-import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 
-import com.meteorhead.leave.R;
-
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -26,6 +19,7 @@ import io.realm.annotations.PrimaryKey;
 public class Leave extends RealmObject implements Parcelable {
     public static final String PARAM_NAME = "LEAVE_OBJECT";
 
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({SPRING, SUMMER, AUTUMN, WINTER})
     public @interface Season{}
@@ -35,22 +29,28 @@ public class Leave extends RealmObject implements Parcelable {
     public static final int WINTER = 3;
 
     @PrimaryKey
-    private int id;
+    private int id = -1;
     @Index
     private Date dateStart;
     @Index
     private Date dateEnd;
     private String title = "";
     private int leavePurpose;
+    private int duration;
 
     public Leave() {
     }
 
-    public Leave(Date dateStart, Date dateEnd, String title, int leavePurpose) {
+    public Leave(Leave leave){
+        this.set(leave);
+    }
+
+    public Leave(Date dateStart, Date dateEnd, String title, int leavePurpose, int duration) {
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
         this.title = title;
         this.leavePurpose = leavePurpose;
+        this.duration = duration;
     }
 
     public int getId() {
@@ -93,13 +93,21 @@ public class Leave extends RealmObject implements Parcelable {
         this.leavePurpose = leavePurpose;
     }
 
-    public void set(Leave other) {
-        this.setDateEnd(other.getDateEnd());
-        this.setDateStart(other.getDateStart());
-        this.setLeavePurpose(other.getLeavePurpose());
-        this.setTitle(other.getTitle());
+    public int getDuration() {
+        return duration;
     }
 
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void set(Leave other) {
+        this.setDateStart(other.getDateStart());
+        this.setDateEnd(other.getDateEnd());
+        this.setLeavePurpose(other.getLeavePurpose());
+        this.setTitle(other.getTitle());
+        this.setDuration(other.getDuration());
+    }
 
     @Override
     public int describeContents() {
@@ -107,12 +115,13 @@ public class Leave extends RealmObject implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(android.os.Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeLong(this.dateStart != null ? this.dateStart.getTime() : -1);
         dest.writeLong(this.dateEnd != null ? this.dateEnd.getTime() : -1);
         dest.writeString(this.title);
         dest.writeInt(this.leavePurpose);
+        dest.writeInt(this.duration);
     }
 
     protected Leave(Parcel in) {
@@ -123,11 +132,12 @@ public class Leave extends RealmObject implements Parcelable {
         this.dateEnd = tmpDateEnd == -1 ? null : new Date(tmpDateEnd);
         this.title = in.readString();
         this.leavePurpose = in.readInt();
+        this.duration = in.readInt();
     }
 
     public static final Parcelable.Creator<Leave> CREATOR = new Parcelable.Creator<Leave>() {
         @Override
-        public Leave createFromParcel(android.os.Parcel source) {
+        public Leave createFromParcel(Parcel source) {
             return new Leave(source);
         }
 
@@ -136,10 +146,4 @@ public class Leave extends RealmObject implements Parcelable {
             return new Leave[size];
         }
     };
-
-    public int getDaysDifference() {
-        return Days.daysBetween(
-                new LocalDate(dateStart.getTime()),
-                new LocalDate(dateEnd.getTime())).getDays();
-    }
 }
