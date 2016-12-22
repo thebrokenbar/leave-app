@@ -4,16 +4,14 @@
         <variable
             name="activityViewModel"
             type="com.meteorhead.leave.mainactivity.ActivityViewModel"/>
+        <import type="android.view.View"/>
     </data>
     <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:openDrawer="start">
-
+        android:layout_height="match_parent" tools:openDrawer="start">
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -23,12 +21,11 @@
             android:layout_height="match_parent">
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
+                app:title="@{activityViewModel.titleVisibility ? activityViewModel.title : null}"
                 android:background="@color/colorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:theme="@style/AppTheme.Toolbar"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
+                android:theme="@style/AppTheme.Toolbar">
             </android.support.v7.widget.Toolbar>
 
             <FrameLayout
@@ -39,7 +36,7 @@
 
         <android.support.design.widget.NavigationView
             android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"

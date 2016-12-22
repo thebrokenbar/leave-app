@@ -9,7 +9,6 @@ import android.view.View;
 import com.meteorhead.leave.R;
 import com.meteorhead.leave.database.dbabstract.HolidaysDbService;
 import com.meteorhead.leave.database.realm.HolidaysRealmService;
-import com.meteorhead.leave.mainactivity.MainActivity;
 import com.meteorhead.leave.remoteDatabase.firebase.holidays.HolidaysRemoteDb;
 import com.meteorhead.leave.remoteDatabase.firebase.holidays.model.HolidaysList;
 
@@ -17,7 +16,6 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import rx.Observable;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
@@ -26,17 +24,15 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     PublishSubject<Boolean> holidaysDownloadSubject = PublishSubject.create();
 
-    private Action1<Boolean> startMainActivityAction = new Action1<Boolean>() {
-        @Override
-        public void call(Boolean aBoolean) {
-            if(aBoolean) {
-                startMainActivity();
-            }
+    private Action1<Boolean> startMainActivityAction = aBoolean -> {
+        if(aBoolean) {
+            startMainActivity();
         }
     };
 
     private void startMainActivity() {
-        startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+        startActivity(new Intent(SplashScreenActivity.this,
+                com.meteorhead.leave.mainactivity.conductor.MainActivity.class));
         finish();
     }
 
@@ -62,19 +58,13 @@ public class SplashScreenActivity extends AppCompatActivity {
         if(holidaysDbService.getHolidays(Locale.getDefault().getLanguage()).isEmpty()) {
             HolidaysRemoteDb holidaysRemoteDb = new HolidaysRemoteDb();
             Observable<HolidaysList> holidaysDownloadObservable = holidaysRemoteDb.getFreeDaysObservable();
-            holidaysDownloadObservable.subscribe(new Action1<HolidaysList>() {
-                @Override
-                public void call(final HolidaysList holidaysList) {
-                    Schedulers.io().createWorker().schedule(new Action0() {
-                        @Override
-                        public void call() {
-                            HolidaysDbService holidaysDbService = new HolidaysRealmService(Realm.getDefaultInstance());
-                            holidaysDbService.insertHolidays(Locale.getDefault().getLanguage(), holidaysList);
-                            holidaysDownloadSubject.onNext(true);
-                            holidaysDbService.finish();
-                        }
-                    });
-                }
+            holidaysDownloadObservable.subscribe(holidaysList -> {
+                Schedulers.io().createWorker().schedule(() -> {
+                    HolidaysDbService holidaysDbService1 = new HolidaysRealmService(Realm.getDefaultInstance());
+                    holidaysDbService1.insertHolidays(Locale.getDefault().getLanguage(), holidaysList);
+                    holidaysDownloadSubject.onNext(true);
+                    holidaysDbService1.finish();
+                });
             });
         } else {
             holidaysDownloadSubject.onNext(true);

@@ -9,6 +9,10 @@
         <variable
             name="selector"
             type="com.meteorhead.leave.leavelist.RecyclerViewAdapterSelector"/>
+        <variable
+            name="viewModel"
+            type="com.meteorhead.leave.leavelist.LeaveListViewModel"/>
+        <import type="com.meteorhead.leave.leavelist.LeaveListViewModel"/>
         <import type="java.text.SimpleDateFormat"/>
     </data>
     <android.support.v7.widget.CardView
@@ -85,8 +89,8 @@
                 android:layout_marginLeft="8dp" />
             <TextView
                 android:id="@+id/leave_list_item_days_count"
-                android:text="@{@plurals/numberOfDays(leave.getDaysDifference(),leave.getDaysDifference())}"
-                tools:text="(3 days)"
+                android:text="@{LeaveListViewModel.getDaysCount(@plurals/numberOfDays(leave.duration, leave.duration), leave)}"
+                tools:text="(3 working days,"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintLeft_toRightOf="@+id/leave_list_item_date_to"

@@ -6,6 +6,9 @@
         <variable
             name="viewModel"
             type="com.meteorhead.leave.leavedetails.LeaveDetailsViewModel" />
+        <variable
+            name="viewHandler"
+            type="com.meteorhead.leave.leavedetails.LeaveDetailsViewHandler"/>
         <import type="android.view.View"/>
     </data>
 
@@ -65,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="date"
                 android:ems="10"
-                android:onClick="@{() -> viewModel.onStartDateClick()}"
+                android:onClick="@{() -> viewHandler.onStartDateClick()}"
                 android:id="@+id/etDateStart"
                 tools:text="@string/select_leave_start_date"
                 android:text="@{viewModel.formatDate(viewModel.leaveObject.dateStart), default=PLACEHOLDER}"
@@ -93,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="date"
                 android:ems="10"
-                android:onClick="@{() -> viewModel.onEndDateClick()}"
+                android:onClick="@{() -> viewHandler.onEndDateClick()}"
                 android:id="@+id/etDateEnd"
                 tools:text="End leave..."
                 android:text="@{viewModel.formatDate(viewModel.leaveObject.dateEnd), default=PLACEHOLDER}"
