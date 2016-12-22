@@ -8,10 +8,10 @@ import com.meteorhead.leave.databinding.LeaveListItemBinding;
  * Created by Lenovo on 2016-09-13.
  */
 
-public class LeaveViewHolder extends RecyclerView.ViewHolder {
+public class LeaveListViewHolder extends RecyclerView.ViewHolder {
     private LeaveListItemBinding itemBinding;
 
-    public LeaveViewHolder(LeaveListItemBinding viewBinding) {
+    public LeaveListViewHolder(LeaveListItemBinding viewBinding) {
         super(viewBinding.getRoot());
         itemBinding = viewBinding;
     }

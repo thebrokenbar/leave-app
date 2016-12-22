@@ -22,7 +22,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.meteorhead.leave.R;
 import com.meteorhead.leave.application.Application;
 import com.meteorhead.leave.databinding.ActivityMainBinding;
-import com.meteorhead.leave.leavelist.conductor.LeaveListView;
+import com.meteorhead.leave.leavelist.LeaveListView;
 import com.meteorhead.leave.mainactivity.ActivityViewModel;
 import com.meteorhead.leave.mainactivity.di.ActivityComponent;
 import com.meteorhead.leave.mainactivity.di.ActivityModule;

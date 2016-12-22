@@ -4,9 +4,9 @@ import com.meteorhead.leave.leavelist.LeaveListResult;
 import com.meteorhead.leave.models.Leave;
 
 /**
- * Created by wierzchanowskig on 30.10.2016.
+ * Created by wierzchanowskig on 06.11.2016.
  */
-
-public interface LeaveProposeActivityController {
+public interface LeaveProposeViewController {
+    void scrollToBottom();
     void returnResult(@LeaveListResult.Code int resultCode, Leave leaveObject);
 }

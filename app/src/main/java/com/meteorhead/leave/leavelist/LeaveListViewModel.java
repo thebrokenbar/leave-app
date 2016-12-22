@@ -2,7 +2,6 @@ package com.meteorhead.leave.leavelist;
 
 import android.databinding.Bindable;
 import android.databinding.ObservableBoolean;
-
 import com.android.databinding.library.baseAdapters.BR;
 import com.google.firebase.crash.FirebaseCrash;
 import com.meteorhead.leave.base.ViewModel;
@@ -10,18 +9,15 @@ import com.meteorhead.leave.database.dbabstract.LeaveDbService;
 import com.meteorhead.leave.database.realm.LeaveRealmService;
 import com.meteorhead.leave.database.realm.base.interfaces.RealmCallback;
 import com.meteorhead.leave.models.Leave;
-import com.meteorhead.leave.models.helpers.WorkingDays;
-import com.meteorhead.leave.models.helpers.impl.RealmWorkingDays;
 import com.orhanobut.logger.Logger;
-
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import io.realm.RealmChangeListener;
-import io.realm.RealmResults;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
 public class LeaveListViewModel extends ViewModel {
@@ -34,9 +30,10 @@ public class LeaveListViewModel extends ViewModel {
     public ObservableBoolean isSelectionMode = new ObservableBoolean(false);
 
     private RealmChangeListener<RealmResults<Leave>> itemsListChangeListener =
-            element -> notifyPropertyChanged(BR.itemsList);
+        element -> notifyPropertyChanged(BR.itemsList);
 
-    public LeaveListViewModel(LeaveListViewController fragmentController, LeaveRealmService leaveDbService) {
+    public LeaveListViewModel(LeaveListViewController fragmentController,
+        LeaveRealmService leaveDbService) {
         this.fragmentController = fragmentController;
         this.leaveDbService = leaveDbService;
     }
@@ -46,12 +43,12 @@ public class LeaveListViewModel extends ViewModel {
     }
 
     @Bindable
-    public Collection<Leave> getItemsList(){
+    public Collection<Leave> getItemsList() {
         return itemsList;
     }
 
     private void setItemsList(RealmResults<Leave> items) {
-        if(this.itemsList != null) {
+        if (this.itemsList != null) {
             this.itemsList.removeChangeListeners();
         }
         this.itemsList = items;
@@ -69,7 +66,7 @@ public class LeaveListViewModel extends ViewModel {
 
     private void showUndoSnackBar(int removedItemsCount) {
         fragmentController.showUndoRemoveSnackBar(removedItemsCount).subscribe(actionClicked -> {
-            if(actionClicked) {
+            if (actionClicked) {
                 restoreRecentlyRemovedLeaves();
             }
         });
@@ -128,5 +125,12 @@ public class LeaveListViewModel extends ViewModel {
         recentlyRemovedItems.add(leaveDbService.copy(leaveToRemove));
         leaveDbService.removeLeave(leaveToRemove);
         showUndoSnackBar(1);
+    }
+
+    public static String getDaysCount(String pluralString, Leave leave) {
+        LocalDate dateStart = LocalDate.fromDateFields(leave.getDateStart());
+        LocalDate dateEnd = LocalDate.fromDateFields(leave.getDateEnd());
+        int totalDays = Days.daysBetween(dateStart, dateEnd).getDays() + 1;
+        return "(" + totalDays + "-" + pluralString + ")";
     }
 }

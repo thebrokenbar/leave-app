@@ -4,13 +4,12 @@ import android.databinding.Bindable;
 import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.widget.SeekBar;
 
 import com.android.databinding.library.baseAdapters.BR;
 
 import com.meteorhead.leave.base.ViewModel;
+import com.meteorhead.leave.leavelist.LeaveListResult;
 import com.meteorhead.leave.mainactivity.ActivityViewModel;
 import com.meteorhead.leave.models.Leave;
 import com.meteorhead.leave.models.helpers.WorkingDays;
@@ -18,9 +17,6 @@ import com.meteorhead.leave.models.helpers.impl.RealmWorkingDays;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static com.meteorhead.leave.leavedetails.conductor.LeaveDetailsView.RESULT_CODE_ADD_OR_EDIT_LEAVE;
-import static com.meteorhead.leave.leavedetails.conductor.LeaveDetailsView.RESULT_CODE_REMOVE_LEAVE;
 
 /**
  * Created by wierzchanowskig on 18.09.2016.
@@ -174,10 +170,10 @@ public class LeaveDetailsViewModel extends ViewModel {
     }
 
     public void removeLeave() {
-        viewController.returnResult(RESULT_CODE_REMOVE_LEAVE, this.leaveObject);
+        viewController.returnResult(LeaveListResult.RESULT_CODE_REMOVE, this.leaveObject);
     }
 
     public void returnLeave(Leave leaveObject) {
-        viewController.returnResult(RESULT_CODE_ADD_OR_EDIT_LEAVE, leaveObject);
+        viewController.returnResult(LeaveListResult.RESULT_CODE_ADD_OR_EDIT, leaveObject);
     }
 }

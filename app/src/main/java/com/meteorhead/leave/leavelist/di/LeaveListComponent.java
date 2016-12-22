@@ -1,7 +1,7 @@
 package com.meteorhead.leave.leavelist.di;
 
 import com.meteorhead.leave.application.di.ViewScope;
-import com.meteorhead.leave.leavelist.conductor.LeaveListView;
+import com.meteorhead.leave.leavelist.LeaveListView;
 
 import dagger.Subcomponent;
 

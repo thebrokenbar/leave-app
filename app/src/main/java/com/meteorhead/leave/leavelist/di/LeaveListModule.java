@@ -5,7 +5,7 @@ import com.meteorhead.leave.database.realm.LeaveRealmService;
 import com.meteorhead.leave.leavelist.LeaveListViewController;
 import com.meteorhead.leave.leavelist.LeaveListViewHandler;
 import com.meteorhead.leave.leavelist.LeaveListViewModel;
-import com.meteorhead.leave.leavelist.conductor.LeaveListView;
+import com.meteorhead.leave.leavelist.LeaveListView;
 
 import javax.inject.Named;
 

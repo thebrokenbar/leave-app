@@ -1,7 +1,7 @@
 package com.meteorhead.leave.leavedetails.di;
 
 import com.meteorhead.leave.application.di.ViewScope;
-import com.meteorhead.leave.leavedetails.conductor.LeaveDetailsView;
+import com.meteorhead.leave.leavedetails.LeaveDetailsView;
 
 import dagger.Subcomponent;
 

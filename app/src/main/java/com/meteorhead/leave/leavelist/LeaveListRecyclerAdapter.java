@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.meteorhead.leave.R;
@@ -20,14 +19,13 @@ import javax.annotation.Nullable;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
 /**
  * Created by Lenovo on 2016-09-13.
  */
 
-public class LeaveListRecyclerAdapter extends RealmRecyclerViewAdapter<Leave, LeaveViewHolder> {
+public class LeaveListRecyclerAdapter extends RealmRecyclerViewAdapter<Leave, LeaveListViewHolder> {
 
     private PublishSubject<Leave> onClickSubject = PublishSubject.create();
     private SparseArrayCompat<RecyclerViewAdapterSelector> selectionArray;
@@ -51,14 +49,14 @@ public class LeaveListRecyclerAdapter extends RealmRecyclerViewAdapter<Leave, Le
     }
 
     @Override
-    public LeaveViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public LeaveListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LeaveListItemBinding viewBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                 R.layout.leave_list_item, parent, false);
-        return new LeaveViewHolder(viewBinding);
+        return new LeaveListViewHolder(viewBinding);
     }
 
     @Override
-    public void onBindViewHolder(final LeaveViewHolder holder, final int position) {
+    public void onBindViewHolder(final LeaveListViewHolder holder, final int position) {
         if(getData() != null) {
             final Leave element = getData().get(position);
             final int pos = holder.getAdapterPosition();

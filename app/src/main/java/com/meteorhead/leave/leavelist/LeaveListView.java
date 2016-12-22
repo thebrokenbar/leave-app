@@ -1,4 +1,4 @@
-package com.meteorhead.leave.leavelist.conductor;
+package com.meteorhead.leave.leavelist;
 
 import android.databinding.BindingAdapter;
 import android.os.Bundle;
@@ -18,12 +18,9 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.meteorhead.leave.R;
 import com.meteorhead.leave.base.BaseView;
 import com.meteorhead.leave.databinding.FragmentLeaveListBinding;
-import com.meteorhead.leave.leavedetails.conductor.LeaveDetailsView;
-import com.meteorhead.leave.leavelist.LeaveListRecyclerAdapter;
-import com.meteorhead.leave.leavelist.LeaveListViewController;
-import com.meteorhead.leave.leavelist.LeaveListViewHandler;
-import com.meteorhead.leave.leavelist.LeaveListViewModel;
+import com.meteorhead.leave.leavedetails.LeaveDetailsView;
 import com.meteorhead.leave.leavelist.di.LeaveListModule;
+import com.meteorhead.leave.leavepropose.LeaveProposeView;
 import com.meteorhead.leave.models.Leave;
 
 import java.util.Collection;
@@ -130,10 +127,10 @@ public class LeaveListView extends BaseView<FragmentLeaveListBinding> implements
 
     private void onLeaveEditResult(int resultCode, Bundle params) {
         switch (resultCode) {
-            case LeaveDetailsView.RESULT_CODE_ADD_OR_EDIT_LEAVE:
+            case LeaveListResult.RESULT_CODE_ADD_OR_EDIT:
                 viewModel.addOrUpdateLeave(params.getParcelable(Leave.PARAM_NAME));
                 break;
-            case LeaveDetailsView.RESULT_CODE_REMOVE_LEAVE:
+            case LeaveListResult.RESULT_CODE_REMOVE:
                 Leave leaveToRemove = params.getParcelable(Leave.PARAM_NAME);
                 viewModel.removeLeave(leaveToRemove.getId());
                 break;
@@ -144,7 +141,7 @@ public class LeaveListView extends BaseView<FragmentLeaveListBinding> implements
 
     @Override
     public void showProposeNewLeaveView() {
-
+        this.showViewForResult(new LeaveProposeView(), this::onLeaveEditResult);
     }
 
     @Override

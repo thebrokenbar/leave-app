@@ -1,4 +1,4 @@
-package com.meteorhead.leave.leavedetails.conductor;
+package com.meteorhead.leave.leavedetails;
 
 import android.databinding.BindingAdapter;
 import android.os.Bundle;
@@ -16,9 +16,6 @@ import android.widget.SeekBar;
 import com.meteorhead.leave.R;
 import com.meteorhead.leave.base.BaseView;
 import com.meteorhead.leave.databinding.LeaveDetailsFragmentContainerBinding;
-import com.meteorhead.leave.leavedetails.LeaveDetailsViewController;
-import com.meteorhead.leave.leavedetails.LeaveDetailsViewHandler;
-import com.meteorhead.leave.leavedetails.LeaveDetailsViewModel;
 import com.meteorhead.leave.leavedetails.di.LeaveDetailsModule;
 import com.meteorhead.leave.models.Leave;
 import com.meteorhead.leave.models.helpers.WorkingDays;
@@ -39,8 +36,6 @@ import javax.inject.Inject;
  */
 
 public class LeaveDetailsView extends BaseView<LeaveDetailsFragmentContainerBinding> implements LeaveDetailsViewController {
-    public static final int RESULT_CODE_REMOVE_LEAVE = 1;
-    public static final int RESULT_CODE_ADD_OR_EDIT_LEAVE = 2;
 
     @Inject
     protected LeaveDetailsViewModel viewModel;
@@ -68,10 +63,6 @@ public class LeaveDetailsView extends BaseView<LeaveDetailsFragmentContainerBind
         binding.setViewModel(viewModel);
 
         setHasOptionsMenu(leaveObject != null);
-
-        if (getAppCompatActivity().getSupportActionBar() != null) {
-            getAppCompatActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.meteorhead.leave.application.di.ViewScope;
 import com.meteorhead.leave.leavedetails.LeaveDetailsViewController;
 import com.meteorhead.leave.leavedetails.LeaveDetailsViewHandler;
 import com.meteorhead.leave.leavedetails.LeaveDetailsViewModel;
-import com.meteorhead.leave.leavedetails.conductor.LeaveDetailsView;
 import com.meteorhead.leave.mainactivity.ActivityViewModel;
 import com.meteorhead.leave.models.Leave;
 import com.meteorhead.leave.models.helpers.WorkingDays;

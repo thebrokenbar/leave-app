@@ -7,8 +7,8 @@ import android.support.annotation.IntDef;
  */
 
 public interface LeaveListResult {
-    @IntDef({RESULT_CODE_ADD, RESULT_CODE_REMOVE})
+    @IntDef({RESULT_CODE_ADD_OR_EDIT, RESULT_CODE_REMOVE})
     @interface Code {}
-    int RESULT_CODE_ADD = 1;
+    int RESULT_CODE_ADD_OR_EDIT = 1;
     int RESULT_CODE_REMOVE = 2;
 }

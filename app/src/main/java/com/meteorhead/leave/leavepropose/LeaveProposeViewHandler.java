@@ -9,18 +9,16 @@ import com.meteorhead.leave.models.Leave;
 
 public class LeaveProposeViewHandler {
 
-    private LeaveProposeActivityController activityController;
     private LeaveProposeViewModel viewModel;
-    private LeaveProposeFragmentController fragmentController;
+    private LeaveProposeViewController viewController;
 
-    public LeaveProposeViewHandler(LeaveProposeActivityController activityController, LeaveProposeViewModel viewModel, LeaveProposeFragmentController fragmentController) {
-        this.activityController = activityController;
+    public LeaveProposeViewHandler(LeaveProposeViewModel viewModel, LeaveProposeViewController viewController) {
         this.viewModel = viewModel;
-        this.fragmentController = fragmentController;
+        this.viewController = viewController;
     }
 
     public void onConfirm(Leave leaveObject) {
-        activityController.returnResult(LeaveListResult.RESULT_CODE_ADD, leaveObject);
+        this.viewController.returnResult(LeaveListResult.RESULT_CODE_ADD_OR_EDIT, leaveObject);
     }
 
     public void onProposedItemClick(Leave leaveObject) {
@@ -28,7 +26,7 @@ public class LeaveProposeViewHandler {
     }
 
     public void onSeasonButtonClick(@Leave.Season int season, int days) {
-        viewModel.showBestLeaveForSeason(season, days);
-        fragmentController.scrollToBottom();
+        this.viewModel.showBestLeaveForSeason(season, days);
+        this.viewController.scrollToBottom();
     }
 }

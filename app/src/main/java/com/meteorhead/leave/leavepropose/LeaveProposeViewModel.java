@@ -8,6 +8,7 @@ import com.android.databinding.library.baseAdapters.BR;
 import com.meteorhead.leave.base.ViewModel;
 import com.meteorhead.leave.database.dbabstract.HolidaysDbService;
 import com.meteorhead.leave.database.realm.HolidaysRealmService;
+import com.meteorhead.leave.mainactivity.ActivityViewModel;
 import com.meteorhead.leave.models.Holiday;
 import com.meteorhead.leave.models.Leave;
 import com.meteorhead.leave.models.helpers.WorkingDays;
@@ -37,13 +38,18 @@ public class LeaveProposeViewModel extends ViewModel {
     private static final int SEEK_BAR_MINIMUM_VALUE = 1;
     private static final int MAX_PROPOSITIONS = 10;
 
+    private final ActivityViewModel activityViewModel;
     @NonNull
-    private Leave leaveObject;
-    private boolean appBarCollapsed;
+    private Leave leaveObject = new Leave();
+    private boolean isAppBarCollapsed;
     private int days = DEFAULT_NUMBER_OF_DAYS;
 
     private int selectedYear = 2016;
     private List<Leave> proposedLeave;
+
+    public LeaveProposeViewModel(ActivityViewModel activityViewModel) {
+        this.activityViewModel = activityViewModel;
+    }
 
     public AppBarLayout.OnOffsetChangedListener onBarCollapseListener() {
         return (appBarLayout, verticalOffset) -> {
@@ -57,13 +63,17 @@ public class LeaveProposeViewModel extends ViewModel {
 
     @Bindable
     public boolean isAppBarCollapsed() {
-        return appBarCollapsed;
+        return isAppBarCollapsed;
     }
 
     @Bindable
-    public void setAppBarCollapsed(boolean appBarCollapsed) {
-        this.appBarCollapsed = appBarCollapsed;
+    public void setAppBarCollapsed(boolean isAppBarCollapsed) {
+        this.isAppBarCollapsed = isAppBarCollapsed;
         notifyPropertyChanged(BR.appBarCollapsed);
+        activityViewModel.titleVisibility.set(isAppBarCollapsed);
+        if(isAppBarCollapsed) {
+            activityViewModel.title.set(leaveObject.getTitle());
+        }
     }
 
     @NonNull
@@ -181,6 +191,9 @@ public class LeaveProposeViewModel extends ViewModel {
     @NonNull
     private List<Leave> getPropositions(LocalDate from, LocalDate to, int days) {
         HolidaysDbService holidaysDbService = new HolidaysRealmService();
+        from = from.minusDays(days);
+        to = to.plusDays(days);
+
         List<Holiday> holidays = holidaysDbService.getHolidaysBetweenDates(
                 Locale.getDefault().getLanguage(),
                 from.toDate(), to.toDate());
