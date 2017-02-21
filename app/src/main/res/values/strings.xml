@@ -14,5 +14,9 @@
     <string name="add_new_leave_button">Add</string>
     <string name="find_leave_button">Find best leave</string>
     <string name="enter_leave_title">Enter leave title…</string>
+    <string name="springLabel">Spring</string>
+    <string name="summerLabel">Summer</string>
+    <string name="autumnLabel">Autumn</string>
+    <string name="winterLabel">Winter</string>
 
 </resources>

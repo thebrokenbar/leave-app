@@ -1,8 +1,11 @@
 package com.meteorhead.leave.models.helpers.impl;
 
+import android.support.annotation.NonNull;
+import com.meteorhead.leave.database.dbabstract.HolidaysDbService;
 import com.meteorhead.leave.database.realm.HolidaysRealmService;
 import com.meteorhead.leave.models.Holiday;
 import com.meteorhead.leave.models.HolidayFields;
+import com.meteorhead.leave.models.Leave;
 import com.meteorhead.leave.models.helpers.WorkingDays;
 import com.meteorhead.leave.utils.DateConverter;
 import com.orhanobut.logger.Logger;
@@ -154,5 +157,36 @@ public class RealmWorkingDays implements WorkingDays {
 
     private String getDefaultCountryCode() {
         return Locale.getDefault().getLanguage();
+    }
+
+    @NonNull
+    public List<Leave> getPropositions(LocalDate from, LocalDate to, int days) {
+        from = from.minusDays(days);
+        to = to.plusDays(days);
+
+        List<Holiday> holidays = holidaysDbService.getHolidaysBetweenDates(
+            Locale.getDefault().getLanguage(),
+            from.toDate(), to.toDate());
+
+        List<Leave> proposedLeave = new ArrayList<>();
+        for (Holiday holiday : holidays) {
+            LocalDate dayTo = new LocalDate(holiday.getHolidayDate().getTime());
+            if(dayTo.getDayOfWeek() > 6) {
+                dayTo = dayTo.plusDays(6 - dayTo.getDayOfWeek());
+            }
+            this.setStartDate(dayTo.toDate());
+            proposedLeave.add(new Leave(dayTo.toDate(),
+                this.getLastWorkingDay(days),
+                null, 0, days));
+            if(dayTo.getDayOfWeek() > 5) {
+                dayTo = dayTo.plusDays(8 - dayTo.getDayOfWeek());
+            }
+            this.setStartDate(dayTo.toDate());
+            proposedLeave.add(new Leave(this.getFirstWorkingDay(days),
+                dayTo.toDate(),
+                null, 0, days));
+        }
+
+        return proposedLeave;
     }
 }

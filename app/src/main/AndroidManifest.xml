@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".mainactivity.conductor.MainActivity"
+            android:name=".mainactivity.MainActivity"
             android:parentActivityName=".splashscreen.SplashScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">

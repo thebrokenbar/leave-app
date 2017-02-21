@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.meteorhead.leave.selecting.seasons.SeasonsViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:background="@color/colorBackground"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:paddingLeft="16dp"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="18sp"
+                android:paddingBottom="4dp"
+                android:gravity="center_vertical|left"
+                android:text="Select a year:"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent" />
+            <Spinner
+                app:selectedValue="@={viewModel.selectedYear}"
+                app:items="@{viewModel.availableYears}"
+                app:itemLayout="@{@layout/spinner_item_year}"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="64dp"
+                android:padding="0dp"
+                android:spinnerMode="dropdown"/>
+        </LinearLayout>
+
+        <Button
+            android:onClick="@{(view) -> viewModel.onSpringClick()}"
+            android:id="@+id/btnSpring"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#b3e956"
+            android:text="@string/springLabel"
+            style="@style/SeasonButton" />
+        <Button
+            android:id="@+id/btnSummer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#55CCFF"
+            android:text="@string/summerLabel"
+            style="@style/SeasonButton" />
+        <Button
+            android:id="@+id/btnAutumn"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#DD8844"
+            android:text="@string/autumnLabel"
+            style="@style/SeasonButton" />
+        <Button
+            android:id="@+id/btnWinter"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#DDDDEE"
+            android:text="@string/winterLabel"
+            style="@style/SeasonButton" />
+    </LinearLayout>
+</layout>

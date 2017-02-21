@@ -4,8 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +11,9 @@ import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.AutoTransitionChangeHandler;
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat;
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
-import com.meteorhead.leave.application.Application;
-import com.meteorhead.leave.application.di.ApplicationComponent;
-import com.meteorhead.leave.mainactivity.conductor.MainActivity;
+import com.meteorhead.leave.mainactivity.MainActivity;
 import com.meteorhead.leave.mainactivity.di.ActivityComponent;
-import com.meteorhead.leave.views.changehandlers.CircularRevealChangeHandlerCompat;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -46,25 +37,35 @@ public abstract class BaseView<V extends ViewDataBinding> extends Controller {
     }
 
     protected ActivityComponent getActivityComponent() {
-        return ((MainActivity)getActivity()).getActivityComponent();
+        return ((MainActivity) getActivity()).getActivityComponent();
     }
-
-    @NonNull
-    protected abstract int getLayoutId();
 
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false);
+        int layoutId = getLayoutId();
+        binding = DataBindingUtil.inflate(inflater, layoutId, container, false);
         View view = binding.getRoot();
         butterknifeUnbinder = ButterKnife.bind(this, view);
         onViewBound(binding);
+        binding.executePendingBindings();
         return view;
     }
 
-    protected void onViewBound(@NonNull V binding) {}
+    private int getLayoutId() {
+        Layout layoutAnnotation = this.getClass().getAnnotation(Layout.class);
+        if (layoutAnnotation == null || layoutAnnotation.value() == 0) {
+            throw new UnsupportedOperationException(
+                "Cannot create view without layout resource annotated");
+        }
+        return layoutAnnotation.value();
+    }
 
-    protected void onViewUnbound(@NonNull V binding) {}
+    protected void onViewBound(@NonNull V binding) {
+    }
+
+    protected void onViewUnbound(@NonNull V binding) {
+    }
 
     @Override
     protected void onDestroyView(View view) {
@@ -84,14 +85,17 @@ public abstract class BaseView<V extends ViewDataBinding> extends Controller {
         onViewResultListener.onResult(resultCode, params);
     }
 
+    protected void showView(BaseView view) {
+        view.setTargetController(this);
+        getRouter().pushController(RouterTransaction.with(view)
+            .pushChangeHandler(new FadeChangeHandler(FADE_ANIMATION_DURATION))
+            .popChangeHandler(new FadeChangeHandler(FADE_ANIMATION_DURATION))
+            .tag(view.getClass().getSimpleName()));
+    }
+
     protected void showViewForResult(BaseView view, OnViewResult onViewResult) {
         view.setTargetController(this);
-        view.setOnViewResultListener(onViewResult);
-        getRouter().pushController(RouterTransaction.with(view)
-                .pushChangeHandler(new FadeChangeHandler(FADE_ANIMATION_DURATION))
-                .popChangeHandler(new FadeChangeHandler(FADE_ANIMATION_DURATION))
-                .tag(view.getClass().getSimpleName())
-        );
+        showView(view);
     }
 
     public AppCompatActivity getAppCompatActivity() {

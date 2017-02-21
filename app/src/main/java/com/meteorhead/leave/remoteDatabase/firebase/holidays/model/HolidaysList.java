@@ -8,12 +8,20 @@ import java.util.List;
 
 public class HolidaysList {
 
-    public List<Holiday> freeDays;
+    private List<Holiday> freeDays;
 
     public HolidaysList() {
     }
 
     public HolidaysList(List<Holiday> freeDays) {
+        this.freeDays = freeDays;
+    }
+
+    public List<Holiday> getFreeDays() {
+        return freeDays;
+    }
+
+    public void setFreeDays(List<Holiday> freeDays) {
         this.freeDays = freeDays;
     }
 

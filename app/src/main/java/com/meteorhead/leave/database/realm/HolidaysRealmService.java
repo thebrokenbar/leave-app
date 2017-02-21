@@ -33,7 +33,7 @@ public class HolidaysRealmService extends RealmService<Holiday> implements Holid
     public void insertHolidays(final String countryCode, final HolidaysList holidaysList) {
         getServiceRealm().executeTransaction(inRealm -> {
             for (HolidaysList.Holiday holiday :
-                    holidaysList.freeDays) {
+                    holidaysList.getFreeDays()) {
                 inRealm.insertOrUpdate(new Holiday(
                         new SupportedCountry(countryCode),
                         new LocalDate().withDayOfYear(holiday.dayOfYear).toDate()));

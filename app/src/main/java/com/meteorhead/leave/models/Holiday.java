@@ -13,6 +13,7 @@ import io.realm.annotations.Index;
 public class Holiday extends RealmObject {
 
     private SupportedCountry country;
+    private String region;
     @Index
     private Date holidayDate;
 
@@ -38,5 +39,13 @@ public class Holiday extends RealmObject {
 
     public void setHolidayDate(Date holidayDate) {
         this.holidayDate = holidayDate;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }
