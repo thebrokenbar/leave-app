@@ -5,8 +5,7 @@
 package com.meteorhead.leave.database.dbabstract;
 
 import com.meteorhead.leave.database.dbabstract.base.DatabaseCallback;
-import com.meteorhead.leave.database.dbabstract.base.DatabaseCallbackQuery;
-import com.meteorhead.leave.models.Leave;
+import com.meteorhead.leave.data.Leave;
 
 import java.sql.Date;
 import java.util.List;

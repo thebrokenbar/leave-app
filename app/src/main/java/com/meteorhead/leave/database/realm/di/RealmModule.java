@@ -24,8 +24,7 @@ public class RealmModule {
     @Provides
     @Singleton
     @Named(MAIN_THREAD)
-    Realm provideRealmMainThreadInstance(Context applicationContext) {
-        Realm.init(applicationContext);
+    Realm provideRealmMainThreadInstance() {
         RealmConfiguration defaultRealmConfig = new RealmConfiguration.Builder()
                 .schemaVersion(SCHEMA_VERSION)
                 .build();

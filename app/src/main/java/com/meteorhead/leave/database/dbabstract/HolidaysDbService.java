@@ -1,6 +1,6 @@
 package com.meteorhead.leave.database.dbabstract;
 
-import com.meteorhead.leave.models.Holiday;
+import com.meteorhead.leave.data.Holiday;
 import com.meteorhead.leave.remoteDatabase.firebase.holidays.model.HolidaysList;
 
 import java.util.Date;

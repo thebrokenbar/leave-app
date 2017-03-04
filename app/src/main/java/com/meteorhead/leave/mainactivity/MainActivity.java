@@ -25,7 +25,7 @@ import com.meteorhead.leave.base.BaseView;
 import com.meteorhead.leave.databinding.ActivityMainBinding;
 import com.meteorhead.leave.mainactivity.di.ActivityComponent;
 import com.meteorhead.leave.mainactivity.di.ActivityModule;
-import com.meteorhead.leave.selecting.seasons.SeasonsView;
+import com.meteorhead.leave.screens.seasons.SeasonsView;
 import com.meteorhead.leave.utils.RealmExporter;
 
 import javax.inject.Inject;
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements
 
         switch (id) {
             case R.id.nav_export_database:
-                RealmExporter.exportDatabase(this);
+                RealmExporter.INSTANCE.exportDatabase(this);
                 break;
         }
 

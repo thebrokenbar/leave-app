@@ -4,8 +4,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.meteorhead.leave.bestleaves.BestLeavesViewModel" />
-        <import type="com.meteorhead.leave.Constants"/>
+            type="com.meteorhead.leave.screens.bestleaves.BestLeavesViewModel" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,18 +21,18 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                style="@style/Widget.AppCompat.SeekBar"
-                android:max="@{Constants.MAX_LEAVE_DAYS}"/>
-                <!--android:progress="@={viewModel.days}"-->
+                android:max="@{viewModel.maxLeaveDays}"
+                android:progress="@={viewModel.days}"
+                style="@style/Widget.AppCompat.SeekBar"/>
             <EditText
                 android:id="@+id/etDays"
                 android:layout_width="48dp"
                 android:layout_height="match_parent"
-                android:inputType="number"/>
-                <!--android:text="@={viewModel.days}" -->
+                android:inputType="number"
+                android:text="@={viewModel.days}"/>
         </LinearLayout>
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             app:items="@{viewModel.leaves}"
             android:id="@+id/lvBestLeavesList"
             android:layout_width="match_parent"

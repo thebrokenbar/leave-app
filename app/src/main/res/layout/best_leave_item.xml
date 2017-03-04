@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.meteorhead.leave.screens.bestleaves.list.LeaveListItemViewModel"/>
+    </data>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp">
+        <TextView
+            android:id="@+id/tvLeaveDaysRange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="1.03.2017 - 5.03.2017"
+            android:text="@{viewModel.leaveDaysRangeString}"
+            android:textAppearance="@android:style/TextAppearance.Material.Medium"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"/>
+        <TextView
+            android:id="@+id/tvLeaveFreeDays"
+            tools:text="5 days"
+            android:text="@{@plurals/numberOfDays(viewModel.leaveTotalDays, viewModel.leaveTotalDays)}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_below="@+id/tvLeaveDaysRange"
+            android:layout_alignParentStart="true"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+            <ImageButton
+                android:id="@+id/btnLeaveShare"
+                android:background="@null"
+                android:src="@drawable/ic_share_gray_36dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </RelativeLayout>
+</layout>
